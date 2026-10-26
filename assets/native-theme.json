@@ -1,0 +1,82 @@
+{
+  "version": "4.1.0-rc.1",
+  "units": "inch-and-point",
+  "canvas": {
+    "width": 13.333333,
+    "height": 7.5,
+    "left": 0.62,
+    "right": 0.62,
+    "bottom": 6.62,
+    "gap": 0.28
+  },
+  "colors": {
+    "brand": "3865BB",
+    "navy": "063F8E",
+    "title": "2F2F2F",
+    "ink": "404040",
+    "secondary": "5A5A5A",
+    "rule": "D8E2EE",
+    "tint": "EDF2F8",
+    "white": "FFFFFF",
+    "orange": "FF7829",
+    "gold": "FFC000",
+    "reference": "BFBFBF",
+    "negative": "C00000",
+    "positive": "00B050"
+  },
+  "profiles": {
+    "desk": {
+      "title": [
+        32,
+        28
+      ],
+      "body": [
+        18,
+        16
+      ],
+      "heading": [
+        22,
+        20
+      ],
+      "table": [
+        14
+      ],
+      "caption": 11,
+      "number": 36
+    },
+    "projection": {
+      "title": [
+        36,
+        32
+      ],
+      "body": [
+        22,
+        20
+      ],
+      "heading": [
+        24,
+        22
+      ],
+      "table": [
+        18,
+        16
+      ],
+      "caption": 12,
+      "number": 40
+    }
+  },
+  "typography": {
+    "lineHeight": 1.25,
+    "titleLineHeight": 1.12,
+    "widthSafety": 0.94,
+    "editReserve": 0.3
+  },
+  "fontCandidates": [
+    "Noto Sans CJK SC",
+    "Noto Sans SC",
+    "Microsoft YaHei",
+    "DengXian",
+    "PingFang SC",
+    "Heiti SC"
+  ]
+}

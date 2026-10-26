@@ -1,0 +1,9 @@
+{
+  "styles": {
+    "band": "<a:solidFill><a:srgbClr val=\"2365B5\"/></a:solidFill><a:ln w=\"0\"><a:solidFill><a:srgbClr val=\"2365B5\"/></a:solidFill></a:ln>",
+    "card": "<a:gradFill rotWithShape=\"1\"><a:gsLst><a:gs pos=\"0\"><a:srgbClr val=\"FAFCFF\"/></a:gs><a:gs pos=\"100000\"><a:srgbClr val=\"EAF1FA\"/></a:gs></a:gsLst><a:lin ang=\"5400000\" scaled=\"1\"/></a:gradFill><a:ln w=\"9000\"><a:solidFill><a:srgbClr val=\"BCD0EC\"/></a:solidFill></a:ln><a:effectLst><a:outerShdw blurRad=\"180000\" dist=\"50000\" dir=\"5400000\" algn=\"ctr\" rotWithShape=\"0\"><a:srgbClr val=\"1F4A86\"><a:alpha val=\"14000\"/></a:srgbClr></a:outerShdw></a:effectLst>",
+    "hubPill": "<a:solidFill><a:srgbClr val=\"FFFFFF\"/></a:solidFill><a:ln w=\"9000\"><a:solidFill><a:srgbClr val=\"DAE5F5\"/></a:solidFill></a:ln><a:effectLst><a:outerShdw blurRad=\"180000\" dist=\"50000\" dir=\"5400000\" algn=\"ctr\" rotWithShape=\"0\"><a:srgbClr val=\"1F4A86\"><a:alpha val=\"14000\"/></a:srgbClr></a:outerShdw></a:effectLst>",
+    "sphere": "<a:gradFill rotWithShape=\"1\"><a:gsLst><a:gs pos=\"0\"><a:srgbClr val=\"659FE4\"/></a:gs><a:gs pos=\"100000\"><a:srgbClr val=\"1A478C\"/></a:gs></a:gsLst><a:lin ang=\"5400000\" scaled=\"1\"/></a:gradFill><a:ln w=\"38000\"><a:solidFill><a:srgbClr val=\"E8F1FF\"/></a:solidFill></a:ln><a:effectLst><a:outerShdw blurRad=\"180000\" dist=\"50000\" dir=\"5400000\" algn=\"ctr\" rotWithShape=\"0\"><a:srgbClr val=\"173C72\"><a:alpha val=\"14000\"/></a:srgbClr></a:outerShdw></a:effectLst>"
+  },
+  "origin": "Original generic DrawingML primitives authored for this public package; no reference-document fragments."
+}
