@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+*.pyc
+out/
+.env
+.env.*
+.DS_Store
+*.pptx
+*.pdf
+*.zip
+!examples/demo.pptx
