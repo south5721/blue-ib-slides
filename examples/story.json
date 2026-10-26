@@ -1,0 +1,36 @@
+{
+  "required_content": [
+    {
+      "id": "scope"
+    },
+    {
+      "id": "results"
+    }
+  ],
+  "slides": [
+    {
+      "id": "p1",
+      "covers": [
+        "scope"
+      ]
+    },
+    {
+      "id": "p2",
+      "covers": [
+        "results"
+      ]
+    }
+  ],
+  "arithmetic_checks": [
+    {
+      "values": [
+        86,
+        123,
+        97,
+        148
+      ],
+      "total": 454,
+      "tolerance": 0
+    }
+  ]
+}
