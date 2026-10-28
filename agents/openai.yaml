@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blue IB Slides"
+  short_description: "制作可编辑蓝调商务 PPT，按内容测量和重排"
+  default_prompt: "请用 $blue-ib-slides 制作可编辑蓝调商务 PPT，并检查实际渲染。"

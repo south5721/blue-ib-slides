@@ -1,0 +1,213 @@
+{
+  "title": "社区阅读计划 · 虚构公开示例",
+  "designSystem": "blue-editorial",
+  "palette": "template-blue",
+  "profile": "desk",
+  "editReserve": 0.3,
+  "author": "blue-ib-slides",
+  "source": "所有项目、日期与数值均为虚构演示。",
+  "slides": [
+    {
+      "layout": "cover",
+      "eyebrow": "2026 / COMMUNITY",
+      "title": "让阅读成为\n社区的日常",
+      "subtitle": "从试点计划到可检查的服务闭环",
+      "footer": "虚构公开示例 · Blue IB Slides"
+    },
+    {
+      "layout": "agenda",
+      "title": "围绕三件事组织本次试点",
+      "items": [
+        {
+          "title": "需求与目标",
+          "body": "记录参与偏好，约定可检查的目标。"
+        },
+        {
+          "title": "服务与执行",
+          "body": "明确分工、资源与阶段交接。"
+        },
+        {
+          "title": "证据与复盘",
+          "body": "保留完整数据，再决定扩展动作。"
+        }
+      ]
+    },
+    {
+      "layout": "strategyHouse",
+      "title": "共同目标、三项支柱与一套基础",
+      "roof": "让阅读更便利",
+      "pillars": [
+        {
+          "title": "空间可达",
+          "body": "公布开放时间，提供清晰的使用指引。"
+        },
+        {
+          "title": "活动可参与",
+          "body": "结合参与偏好，安排不同形式的阅读活动。"
+        },
+        {
+          "title": "结果可复核",
+          "body": "记录场次、参与和反馈，注明统计口径。"
+        }
+      ],
+      "foundation": {
+        "title": "共同基础",
+        "body": "共用资源清单、责任交接与反馈记录。"
+      }
+    },
+    {
+      "layout": "cycleEvidence",
+      "title": "把每轮反馈转成下一轮改进",
+      "centerLabel": "持续改进",
+      "steps": [
+        {
+          "title": "收集需求",
+          "text": "记录参与者的时间、空间与活动偏好。"
+        },
+        {
+          "title": "组织试点",
+          "text": "按约定分工执行，保留活动与交接记录。"
+        },
+        {
+          "title": "复核结果",
+          "text": "核对参与、反馈和限制，明确下一轮调整。"
+        }
+      ]
+    },
+    {
+      "layout": "phaseBand",
+      "title": "三阶段推进，每个阶段都有交付",
+      "steps": [
+        {
+          "title": "准备",
+          "date": "第一周",
+          "text": "完成需求记录、资源清单和分工。"
+        },
+        {
+          "title": "试点",
+          "date": "第二至三周",
+          "text": "举办活动，记录参与和服务反馈。"
+        },
+        {
+          "title": "复盘",
+          "date": "第四周",
+          "text": "核验结果，形成下一轮调整清单。"
+        }
+      ],
+      "summary": "先核验试点证据，再讨论扩大范围。"
+    },
+    {
+      "layout": "comparison",
+      "title": "让改进动作对应具体问题",
+      "leftHeading": "观察到的问题",
+      "rightHeading": "下一轮改进",
+      "pairs": [
+        {
+          "leftTitle": "时间选择集中",
+          "leftBody": "部分参与者难以参加工作日活动。",
+          "rightTitle": "增加周末场次",
+          "rightBody": "记录不同时段需求，保留选择依据。"
+        },
+        {
+          "leftTitle": "交接依赖经验",
+          "leftBody": "材料来源与责任分工不够清晰。",
+          "rightTitle": "建立共用清单",
+          "rightBody": "逐项注明材料、主责、来源与完成时间。"
+        }
+      ]
+    },
+    {
+      "layout": "timeline",
+      "title": "明确日期、责任与阶段交付",
+      "range": {
+        "start": "2026-11-01",
+        "end": "2026-11-28"
+      },
+      "tasks": [
+        {
+          "title": "整理需求",
+          "start": "2026-11-01",
+          "end": "2026-11-06",
+          "owner": "需求小组",
+          "deliverable": "需求记录"
+        },
+        {
+          "title": "开展活动",
+          "start": "2026-11-07",
+          "end": "2026-11-20",
+          "owner": "服务小组",
+          "deliverable": "活动记录"
+        },
+        {
+          "title": "复盘调整",
+          "start": "2026-11-21",
+          "end": "2026-11-28",
+          "owner": "复盘小组",
+          "deliverable": "调整清单"
+        }
+      ]
+    },
+    {
+      "layout": "chartBrief",
+      "title": "用数据检查试点结果，再决定扩展",
+      "categories": [
+        "第一周",
+        "第二周",
+        "第三周",
+        "第四周"
+      ],
+      "series": [
+        {
+          "name": "虚构参与人数",
+          "values": [
+            86,
+            123,
+            97,
+            148
+          ],
+          "role": "actual"
+        }
+      ],
+      "kpis": [
+        {
+          "label": "四周参与人次",
+          "value": "454"
+        },
+        {
+          "label": "四周举办场次",
+          "value": "12"
+        }
+      ]
+    },
+    {
+      "layout": "comparisonMatrix",
+      "title": "共用口径比较三类活动",
+      "columns": [
+        "项目",
+        "共读活动",
+        "主题分享",
+        "自由阅读"
+      ],
+      "rows": [
+        [
+          "组织形式",
+          "小组共读",
+          "主题交流",
+          "自主参与"
+        ],
+        [
+          "记录重点",
+          "到场与反馈",
+          "问题与建议",
+          "资源使用"
+        ],
+        [
+          "复盘交付",
+          "活动记录",
+          "建议清单",
+          "资源清单"
+        ]
+      ]
+    }
+  ]
+}

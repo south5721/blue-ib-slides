@@ -1,15 +1,16 @@
 {
   "name": "blue-ib-slides-skill",
-  "version": "4.1.0-rc.1",
+  "version": "4.3.0",
   "private": true,
   "license": "MIT",
-  "description": "Brand-neutral editable blue diagram presentation skill",
+  "description": "Editable blue business presentation skill with measured adaptive layouts",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
     "demo": "python3 scripts/build-native.py examples/demo.json out/demo.pptx",
-    "test": "python3 tests/test_release.py"
+    "test": "python3 tests/test_release.py && python3 tests/test_4_3.py",
+    "demo:editorial": "python3 scripts/build-native.py examples/editorial.json out/editorial.pptx"
   },
   "dependencies": {
     "pptxgenjs": "4.0.1",

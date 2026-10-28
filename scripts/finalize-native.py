@@ -14,6 +14,18 @@ for n,data in entries:
   # Preserve producer namespace declarations, mc:Ignorable and child ordering.
   # Re-serializing an OOXML part with ElementTree drops unused namespace bindings.
   xml=data.decode('utf-8')
+  if re.fullmatch(r'ppt/slides/slide[0-9]+\.xml',n):
+   ids=re.findall(r'<p:cNvPr\b[^>]*\bid="([^"]+)"',xml)
+   if len(ids)!=len(set(ids)):
+    # PptxGenJS can reuse a table frame ID after slide chrome. Only generated
+    # slides enter this finalizer. Never rewrite imported decks or ID references.
+    if re.search(r'<(?:a:(?:stCxn|endCxn)|p:(?:timing|bldLst))\b',xml):
+     raise ValueError('Duplicate generated shape IDs with references require an explicit mapping')
+    counter=[0]
+    def unique_id(m):
+     counter[0]+=1
+     return m[1]+str(counter[0])+m[2]
+    xml=re.sub(r'(<p:cNvPr\b[^>]*\bid=")[^"]+("[^>]*>)',unique_id,xml)
   xml=re.sub(r'<a:(?:normAutofit|spAutoFit|noAutofit)\b[^>]*/>','',xml)
   xml=re.sub(r'<a:bodyPr\b([^>]*?)/>',r'<a:bodyPr\1><a:noAutofit/></a:bodyPr>',xml)
   xml=re.sub(r'(<a:bodyPr\b[^>]*>)(?!<a:noAutofit/>)',r'\1<a:noAutofit/>',xml)
@@ -40,16 +52,6 @@ for n,data in entries:
      return '<p:spPr>'+inner+profile+'</p:spPr>'
     return re.sub(r'<p:spPr\b[^>]*>(.*?)</p:spPr>',patch_properties,block,count=1,flags=re.S)
    xml=re.sub(r'<p:sp\b.*?</p:sp>',patch_shape,xml,flags=re.S)
-  if re.fullmatch(r'ppt/slides/slide[0-9]+[.]xml',n):
-   ids=re.findall(r'<p:cNvPr\b[^>]*\bid="([0-9]+)"',xml)
-   if len(ids)!=len(set(ids)):
-    # Generated decks have no animation or connector ID references.
-    if re.search(r'<(?:a:(?:stCxn|endCxn)|p:spTgt)\b',xml):raise ValueError('Duplicate shape IDs with references require an explicit repair')
-    next_id=[0]
-    def unique_id(m):
-     next_id[0]+=1
-     return m[1]+str(next_id[0])+m[2]
-    xml=re.sub(r'(<p:cNvPr\b[^>]*\bid=")[0-9]+(")',unique_id,xml)
   data=xml.encode('utf-8')
  out.append((n,data))
 fd,temp=tempfile.mkstemp(suffix='.pptx',dir=target.parent);os.close(fd)

@@ -3,6 +3,8 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {planBlue} from './diagram-system.mjs';
+import {planEditorial} from './editorial-system.mjs';
+import {planTemplateRelations} from './template-relations.mjs';
 export const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 export const theme=JSON.parse(fs.readFileSync(path.join(root,'assets/native-theme.json'),'utf8'));
 export function dependency(name){
@@ -12,6 +14,10 @@ export function dependency(name){
  }
 }
 const canvas=dependency('@napi-rs/canvas');
+const office='/Applications/Microsoft PowerPoint.app/Contents/Resources/DFonts';
+for(const [file,name] of [['Deng.ttf','DengXian'],['Dengb.ttf','DengXian'],['arial.ttf','Arial'],['arialbd.ttf','Arial'],['Kaiti.ttf','KaiTi']]){
+  const p=path.join(office,file);if(fs.existsSync(p))canvas.GlobalFonts.registerFromPath(p,name);
+}
 // Register only local, existing font files. Never download or silently substitute a font.
 for(const p of (process.env.BLUE_IB_FONT_FILES||'').split(path.delimiter).filter(Boolean)){
   if(!fs.existsSync(p))throw new Error(`Font file not found: ${p}`);
@@ -23,7 +29,7 @@ export function resolveFont(requested){
   const font=requested||process.env.BLUE_IB_FONT||theme.fontCandidates.find(f=>availableFonts.includes(f));
   if(!font||!availableFonts.includes(font))throw new Error(`Font unavailable: ${requested||theme.fontCandidates.join(', ')}. Supply BLUE_IB_FONT_FILES or an installed deck.font; render with the same font.`);
   const ctx=canvas.createCanvas(20,20).getContext('2d');ctx.font=`24px "${font}"`;
-  if(ctx.measureText('保险经营').width<=0)throw new Error(`CJK font measurement failed: ${font}`);
+  if(ctx.measureText('中文排版').width<=0)throw new Error(`CJK font measurement failed: ${font}`);
   return font;
 }
 const ctx=canvas.createCanvas(20,20).getContext('2d');
@@ -65,10 +71,18 @@ export function titlePlan(title,font,profile){
   for(const size of profile.title){const m=measure(title,12.08,size,font,true,{lh:1.12});if(m.lines.length<=2)return {...m,size}}
   throw new Error(`Title exceeds two lines at its size floor; revise the title, keeping qualifications in the subtitle: ${title}`);
 }
-export function normalizeSlide(s){
+export function normalizeSlide(s,system='blue-editorial'){
   let type=s.layout||'auto';
   if(type==='auto'){
-    if(s.relationship==='cause-effect'&&s.pairs)type='causeEffect';
+    if(system==='blue-editorial'&&s.roof&&s.pillars)type='strategyHouse';
+    else if(system==='blue-editorial'&&s.relationship==='cycle'&&s.steps)type='cycleEvidence';
+    else if(system==='blue-editorial'&&s.relationship==='sequence'&&s.steps)type='phaseBand';
+    else if(s.tasks&&s.range)type='timeline';
+    else if(s.items&&s.relationship==='agenda')type='agenda';
+    else if(['comparison','challenge-solution'].includes(s.relationship)&&s.pairs)type='comparison';
+    else if(s.relationship==='comparison'&&s.columns&&s.rows)type='comparisonMatrix';
+    else if(s.series&&s.categories&&s.kpis)type='chartBrief';
+    else if(s.relationship==='cause-effect'&&s.pairs)type='causeEffect';
     else if(s.relationship==='shared-hub'&&s.hub)type='hubEvidence';
     else if(s.relationship==='peers'&&s.modules)type='peerColumns';
     else if(s.evidenceRows)type='evidenceRows';
@@ -80,7 +94,7 @@ export function normalizeSlide(s){
     else if(s.bullets)type='bullets';
     else throw new Error('auto layout needs modules, bullets, steps, table, or chart evidence');
   }
-  if(!['cover','divider','cards','bullets','flow','kpis','table','barChart','peerColumns','evidenceRows','causeEffect','hubEvidence','dualChart'].includes(type))throw new Error(`Unsupported layout: ${type}`);
+  if(!['cover','divider','cards','bullets','flow','kpis','table','barChart','peerColumns','evidenceRows','causeEffect','hubEvidence','dualChart','chartBrief','comparison','comparisonMatrix','timeline','agenda','strategyHouse','cycleEvidence','phaseBand'].includes(type))throw new Error(`Unsupported layout: ${type}`);
   return {...s,layout:type};
 }
 function rowPlans(items,box,font,profile,reserve){
@@ -188,12 +202,13 @@ function referencePlans(s,box,font,profile,reserve){
   }
 }
 export function planDeck(deck){
-  deck={designSystem:'blue-ib',...deck};
   if(!Array.isArray(deck.slides)||!deck.slides.length)throw new Error('slides must be nonempty');
-  const font=resolveFont(deck.font),profile=theme.profiles[deck.profile||'desk'];if(!profile)throw new Error('profile must be desk or projection');
+  if(deck.fontProfile&&!['template-kai','business-sans'].includes(deck.fontProfile))throw new Error('Unknown fontProfile');
+  if(deck.palette&&!theme.palettes?.[deck.palette])throw new Error('Unknown palette; choose a declared whole-deck palette');
+  const font=resolveFont(deck.font||(deck.fontProfile==='template-kai'?'KaiTi':undefined)),profile=theme.profiles[deck.profile||'desk'];if(!profile)throw new Error('profile must be desk or projection');
   const pages=[];const decisions=[];
   for(let i=0;i<deck.slides.length;i++){
-    const s=normalizeSlide(deck.slides[i]);s.title=s.title||deck.title;if(!s.title)throw new Error(`slide ${i+1} has no title`);
+    const s=normalizeSlide(deck.slides[i],deck.slides[i].designSystem||deck.designSystem||'blue-editorial');s.title=s.title||deck.title;if(!s.title)throw new Error(`slide ${i+1} has no title`);
     const title=titlePlan(s.title,font,profile);const sub=s.subtitle||s.banner||'';
     const subtitle=sub?measure(sub,12.08,profile.body.at(-1),font):null;
     if(subtitle&&subtitle.lines.length>3)throw new Error(`slide ${i+1}: subtitle longer than three lines; move it into the main content`);
@@ -202,7 +217,10 @@ export function planDeck(deck){
     const reserve=s.editReserve??deck.editReserve??0.30;if(reserve<0||reserve>0.5)throw new Error('editReserve must be 0–0.5');
     let plans;
     const diagram=(s.designSystem||deck.designSystem)==='blue-ib'?planBlue(s,{font,profile,measure,wrap,reserve,policy:s.layoutPolicy||deck.layoutPolicy||'adaptive'}):null;
+    const editorial=(s.designSystem||deck.designSystem||'blue-editorial')==='blue-editorial'?planEditorial({...s,author:s.author||deck.author},{box,font,profile,measure,reserve}):null;
     if(diagram)plans=diagram;
+    else if(['strategyHouse','cycleEvidence','phaseBand'].includes(s.layout))plans=planTemplateRelations(s,{box,font,profile,measure,reserve});
+    else if(editorial)plans=editorial;
     else if(['peerColumns','evidenceRows','causeEffect','hubEvidence'].includes(s.layout))plans=referencePlans(s,box,font,profile,reserve);
     else if(s.layout==='cards')plans=modulePlans(s.modules||s.cards,box,font,profile,reserve);
     else if(s.layout==='bullets')plans=rowPlans(s.bullets.map((x,j)=>typeof x==='string'?{heading:`${j+1}`,text:x}:x),box,font,profile,reserve);

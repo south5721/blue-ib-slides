@@ -4,6 +4,8 @@ import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {dependency,theme,root,planDeck,measure,wrap,latinFor} from './native-layout.mjs';
 import {renderBlue,drawSemanticIcon} from './diagram-system.mjs';
+import {renderEditorial} from './editorial-system.mjs';
+import {renderTemplateRelations} from './template-relations.mjs';
 const [input,output]=process.argv.slice(2);
 if(!input||!output){console.error('node generate-pptx.mjs deck.json out.pptx');process.exit(2)}
 try{
@@ -12,10 +14,11 @@ const deck=JSON.parse(fs.readFileSync(input,'utf8')),plan=planDeck(deck);
 const PPTX=dependency('pptxgenjs'),pptx=new PPTX();
 pptx.layout='LAYOUT_WIDE';pptx.title=deck.title||'Blue IB';pptx.author=deck.author||'';pptx.company=deck.company||'';pptx.lang='zh-CN';
 pptx.theme={headFontFace:plan.font,bodyFontFace:plan.font,lang:'zh-CN'};
-const C=theme.colors,R=pptx.ShapeType;const pages=[],nativePatches={};let num=0,objects=[];
+const C={...theme.colors,...(theme.palettes?.[deck.palette]||{})},R=pptx.ShapeType;const pages=[],nativePatches={};let num=0,objects=[];
 function nativeStyle(id,xml){(nativePatches[`ppt/slides/slide${num}.xml`]??={})[id]=xml;}
 function rule(s,x,y,w,color=C.rule){s.addShape(R.line,{x,y,w,h:0,line:{color,width:0.65}})}
 function text(s,id,t,x,y,w,h,size,opts={}){
+ if([x,y,w,h,size].some(v=>!Number.isFinite(v))||w<=0||h<=0)throw new Error(`${id}: invalid/non-finite text frame; generation stopped`);
  const m=measure(t,w,size,plan.font,opts.bold||false,{lh:opts.lh||1.25});
  if(m.actualHeight>h+0.015)throw new Error(`${id}: needs ${m.actualHeight.toFixed(2)}in, has ${h.toFixed(2)}in at ${size}pt; reflow first`);
  s.addText(m.text,{x,y,w,h,fontFace:plan.font,fontSize:size,color:C.ink,margin:0,valign:'top',fit:'none',lineSpacingMultiple:1.1,paraSpaceAfterPt:0,objectName:id,lang:'zh-CN',...opts});
@@ -25,9 +28,9 @@ function chrome(s,p){
  if((p.s.designSystem||deck.designSystem||'blue-ib')==='blue-ib'&&(p.s.skin||deck.skin)!=='report'){
   renderBlue(s,{...p,p:{...p.p,mode:'blueChrome',titleSize:p.title.size,titleHeight:p.title.height,subtitleSize:plan.profile.body.at(-1)}},{pptx,R,root,measure,font:plan.font,objects,nativeStyle,deck,num});return;
  }
- const graphical=(p.s.skin||deck.skin)==='diagram';
+ const graphical=(p.s.skin||deck.skin)==='diagram'||(p.s.designSystem||deck.designSystem||'blue-editorial')==='blue-editorial';
  s.background={color:C.white};text(s,'title',p.s.title,.62,.34,12.09,p.title.height,p.title.size,{bold:true,color:graphical?C.brand:C.title,lh:1.12});
- rule(s,.62,.34+p.title.height+.12,graphical?1.6:12.09,graphical?C.brand:C.rule);
+ rule(s,.62,.34+p.title.height+.12,12.09,C.rule);
  if(p.subtitle)text(s,'subtitle',p.s.subtitle||p.s.banner,.62,.34+p.title.height+.28,12.09,p.subtitle.height,plan.profile.body.at(-1),{color:C.secondary});
  const source=p.s.source??deck.source??'';
  if(source){const m=measure(source,11.45,plan.profile.caption,plan.font);if(m.lines.length>2)throw new Error('Source exceeds two lines');text(s,'source',source,.62,6.86,11.45,.40,plan.profile.caption,{color:C.secondary})}
@@ -131,14 +134,16 @@ for(const q of plan.pages){
  if(q.p.mode==='cover')cover(s,q);
  else if(q.p.mode==='divider'){s.background={color:C.white};text(s,'section-number',q.s.number||String(num),.8,1.4,2.4,.9,44,{bold:true,color:C.brand});const m=measure(q.s.title,11.6,36,plan.font,true);text(s,'section-title',q.s.title,.8,3.1,11.6,m.height,36,{bold:true,color:C.navy})}
  else if(q.p.mode.startsWith('blue'))renderBlue(s,q,{pptx,R,root,measure,font:plan.font,objects,nativeStyle,deck,num});
+ else if(q.p.mode.startsWith('editorial'))renderEditorial(s,q,{pptx,R,root,measure,font:plan.font,objects,deck,num,text,chrome,colors:{...C,...theme.editorialColors,blue:C.brand}});
+ else if(q.p.mode.startsWith('template'))renderTemplateRelations(s,q,{pptx,R,root,measure,font:plan.font,objects,deck,num,text,chrome,colors:{...C,...theme.editorialColors,blue:C.brand}});
  else{chrome(s,q);({rows,columns,statement,table,chart,kpis,peerColumns,evidenceRows,causeEffect,hubEvidence}[q.p.mode])(s,q)}
- for(const o of objects)if(o.x<0||o.y<0||o.x+o.w>13.334||o.y+o.h>7.5)throw new Error(`Object outside slide: ${o.id}`);
- s.addNotes([q.s.notes||'',q.s.source??deck.source??''].filter(Boolean).join('\n'));pages.push({slide:num,inputSlide:q.inputIndex,composition:q.p.mode,objects});
+ for(const o of objects)if([o.x,o.y,o.w,o.h].some(v=>!Number.isFinite(v))||o.x<0||o.y<0||o.x+o.w>13.334||o.y+o.h>7.5)throw new Error(`Object has invalid coordinates or is outside slide: ${o.id}`);
+ s.addNotes([q.s.notes||'',q.s.source??deck.source??''].filter(Boolean).join('\n'));pages.push({slide:num,inputSlide:q.inputIndex,composition:q.p.mode,contentSegments:q.p.contentSegments||[],rhythm:q.s.pageRhythm||(/Cover|cover|divider/.test(q.p.mode)?'anchor':/Chart|chart|Matrix|table/.test(q.p.mode)?'dense':q.p.rows?.length>2?'dense':'breathing'),objects});
 }
 const target=path.resolve(output);fs.mkdirSync(path.dirname(target),{recursive:true});await pptx.writeFile({fileName:target});
 if(process.env.BLUE_IB_KEEP_RAW)fs.copyFileSync(target,target+'.raw.pptx');
 const patchFile=target+'.native-styles.json';fs.writeFileSync(patchFile,JSON.stringify(nativePatches));
 const result=spawnSync(process.env.BLUE_IB_PYTHON||'python3',[path.join(root,'scripts/finalize-native.py'),target,plan.font,latinFor(plan.font),patchFile],{encoding:'utf8'});if(result.status!==0)throw new Error(`OOXML finalization failed: ${result.stderr||result.stdout}`);
-fs.writeFileSync(target+'.layout.json',JSON.stringify({version:theme.version,font:plan.font,profile:deck.profile||'desk',units:'inches, font points',editContract:{mode:'noAutofit',reserve:deck.editReserve??.30,policies:plan.pages.map(q=>({inputSlide:q.inputIndex,policy:q.p.policy||'adaptive',reserve:q.p.policy==='reference'?0:q.reserve})),limit:'Reserved headroom is a design estimate. Only representative edits in the named application are verified; arbitrary text growth is unsupported.'},decisions:plan.decisions,pages,visualQA:'pending actual PPTX rendering and per-page review'},null,2));
+fs.writeFileSync(target+'.layout.json',JSON.stringify({version:theme.version,font:plan.font,profile:deck.profile||'desk',units:'inches, font points',designLock:{designSystem:deck.designSystem||'blue-editorial',palette:C,paletteProfile:deck.palette||'blue-original',fontProfile:deck.fontProfile||'business-sans',editorialColors:theme.editorialColors,typography:plan.profile,actualMeasuredFont:plan.font,latinFont:latinFor(plan.font),canvas:theme.canvas},editContract:{mode:'noAutofit',reserve:deck.editReserve??.30,policies:plan.pages.map(q=>({inputSlide:q.inputIndex,policy:q.p.policy||'adaptive',reserve:q.p.policy==='reference'?0:q.reserve})),limit:'Reserved headroom is a design estimate. Only representative edits in the named application are verified; arbitrary text growth is unsupported.'},decisions:plan.decisions,pages,visualQA:'pending actual PPTX rendering and per-page review'},null,2));
 console.log(`Created ${target} (${pages.length} slides; font ${plan.font}); visual review pending`);
 }catch(e){console.error(e.stack||e.message);process.exit(2)}

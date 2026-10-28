@@ -1,55 +1,70 @@
 # blue-ib-slides
 
-以蓝色标签、橙色动作词和关系图解制作可编辑PPTX的个人技能。支持字体实际测量、同级字号、内容驱动重排、完整模块拆页、原生表格和内嵌数据图表。公文条目风为可选模式。
+可编辑蓝调商务 PPT 技能，公开版 **4.3.0**，MIT 许可。默认蓝色标签、橙色动作词与清晰的图解关系；按真实文字测量选择版式、重排和拆页，保留事实及数值。
 
-这是待验收的`4.1.0-rc.1`公开准备版。所有示例均为虚构的社区阅读计划；不附训练文档、公司素材、源稿截图、品牌logo或字体文件。图解组件为独立原生矢量实现，公开版不宣称复刻某家公司的字体与背景。
+![虚构公开示例](examples/preview.png)
 
-![虚构公开样例](examples/preview.png)
+## 安装或升级
 
-[下载可编辑虚构样例](examples/demo.pptx)；源输入为`examples/demo.json`。
+向 Codex 发送：
 
-## 安装与运行
+> 请安装 blue-ib-slides，地址是：https://github.com/south5721/blue-ib-slides 。如已安装，请先完整备份并保留我的定制，再升级。
 
-需要Node 22或更新版本、Python 3.9或更新版本，以及目标应用能使用的中文字体。本包使用两个固定版本依赖，安装不执行生命周期脚本：
+也可从 [Releases](https://github.com/south5721/blue-ib-slides/releases/latest) 下载，将其中的 `blue-ib-slides` 文件夹放入个人技能目录，例如 `~/.codex/skills/`。替换旧版前先备份。安装后新建 Codex 会话，确保重新加载技能。
+
+需要 **Node.js >=22、Python >=3.9**，以及系统中已有、允许使用的中文字体：
 
 ```sh
 npm ci --ignore-scripts
-python3 scripts/build-native.py examples/demo.json out/demo-v1.pptx
 npm test
+npm run demo
+npm run demo:editorial
 ```
 
-若Node不在PATH，可设置`BLUE_IB_NODE`。选择本机已有CJK字体可设置`BLUE_IB_FONT`；字体文件未被canvas发现时，可通过`BLUE_IB_FONT_FILES`指定明确的本地文件，多个文件按操作系统路径分隔符分开。缺字体会报错，不会联网下载或静默替换。字体family必须同时在测量环境与目标渲染应用中可用。
+字体文件不随包提供，也不会自动下载。可用 `BLUE_IB_FONT` 或 JSON 的 `font` 指定字体，用 `BLUE_IB_FONT_FILES` 注册本机已有字体路径（多路径用系统路径分隔符）。测量和实际 PowerPoint 渲染须使用同一字体。`BLUE_IB_NODE` 可指定已有 Node 运行时。
 
-将本目录作为`blue-ib-slides`技能文件夹放入工具支持的个人skills目录即可使用`SKILL.md`。保留原文件夹和依赖在一起；已有同名技能时先备份，在独立目录测试，不默认覆盖。
+## 怎么使用
 
-结构：`SKILL.md`、`references/`、`scripts/`、`assets/`、`examples/`和`tests/`。布局字段见[JSON说明](references/schema.md)。生成器保留源文件，输出已存在时停止。`out/`及旁置检查JSON不属于默认发布文件。
+附上材料后，可直接发送：
 
-## 在Codex中使用
+> 请用 $blue-ib-slides，根据附件生成一份可编辑的蓝调商务汇报 PPT，面向管理层，预计 10 页。保留关键事实与数字；内容过密时重排或拆页，并检查实际 PPTX 渲染。
 
-安装后新建任务、附上材料，并明确调用`$blue-ib-slides`。例如：
+精修已有 PPT：
 
-- 生成：`$blue-ib-slides 根据附件做一份可编辑PPTX，默认图解风，保留事实、数值和来源。长文优先重排或拆页，并渲染每页检查。`
-- 精修：`$blue-ib-slides 先检查附件PPT的字体、密度与布局，再在副本上改进，保留业务事实，交付可编辑版本和实际对照。`
-- 参考风格：`$blue-ib-slides 从我的参考稿提炼网格、字阶、留白和关系图解，用于这次新内容；私有素材只留在本次任务。`
+> 请用 $blue-ib-slides 精修附件，统一网格、留白、字阶和图表；保留事实与可编辑性，先备份原件。
 
-可在请求中补充案头/投影、页数偏好、听众、目标应用和允许使用的字体。技能会结合内容判断版式；不承诺所有输入都能自动完美排版。
+参考指定风格：
 
-工程脚本接收声明式JSON，已覆盖四栏同级模块、共享枢纽、三段证据、原因与动作、对齐条目、表格、柱图及双图。任意PPTX的导入、复杂架构/泳道/循环或精确保真重写，需要能读取附件并操作目标应用的agent和额外实现，不能把JSON生成器描述成通用保真转换器。
+> 请用 $blue-ib-slides 学习附件的布局、字阶和组件关系，主色保持蓝色。区分同内容复现与新内容迁移，展示实际渲染后的对照。
 
-## 字体与许可
+## 4.3 的能力
 
-原创代码和文档拟采用MIT，见[LICENSE](LICENSE)；发布前由维护者确认。直接依赖为PptxGenJS 4.0.1和@napi-rs/canvas 0.1.100，均按其MIT许可证使用，归因和完整许可见[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。依赖代码、原生二进制和字体均不在此仓库中重新打包。
+- 新增封面、目录、成对比较、原生比较表、按真实日期比例绘制的时间线，以及指标与图表组合页。
+- 新增战略屋、闭环证据、阶段带三类原生可编辑图解；长内容按同级字号续页，保留完整文本校验记录。
+- 延续并列模块、证据行、因果图、共同中心、双图与表格；原有 `designSystem: "blue-ib"` 输入保持可用。新输入默认 `blue-editorial`。
+- 原生表格及真正的 PowerPoint Chart/XLSX 数据；核对图表缓存、内嵌工作簿、关系和命名空间，修复生成中的重复对象 ID；拒绝有动画引用时的歧义重编号。
+- 只读 PPTX 结构、字体、分组几何盘点，以及选定页模板的未使用母版清理。盘点不能替代实际渲染。
+- 可选本地 PPT Master 桥接：文档转换、PPTX 盘点、模板填充、静态 SVG 导出和备注/已有本地媒体增强。主生成器不依赖 PPT Master，不自动安装它、配置凭据或调用云端 TTS。
 
-Noto Sans CJK可作为开源字体选择，其上游采用SIL Open Font License 1.1；参见[Noto Sans CJK许可](https://github.com/notofonts/noto-cjk/blob/main/Sans/LICENSE)。本包不附带该字体。其他系统或商业字体应由使用者依据相应授权自行安装，不将其名称或本机可用状态视为再分发许可。
+输入结构见 [schema](references/schema.md)，新页面见 [editorial.json](examples/editorial.json)，质量边界见 [QA](references/qa.md)。命令行构建：
 
-## 验证与编辑
+```sh
+python3 scripts/build-native.py examples/editorial.json out/editorial.pptx
+python3 scripts/ppt-master-bridge.py --root /path/to/existing/ppt-master doctor
+```
 
-机械检查覆盖ZIP关系、Office锚点、文字覆盖和图表缓存/XLSX一致性。`npm test`不等于视觉通过。交付时需查看实际PPTX全套缩略图及每页渲染，并说明客户端、版本和字体。
+模板清理单独需要 requirements.txt 中的 lxml；文档转换和 SVG 路线另需已有 PPT Master 对应脚本及依赖，缺失会明确报错。其默认可编辑图表/表格可能只是形状；`svg-export --semantic-native` 要求上游确有语义原生导出选项。真正 Master/Layout 仅来自经过核验的模板路线，不能推及任意自由设计页。详见 [集成说明](references/ppt-master.md)。
 
-`editReserve`是生成期预留估计；noAutofit保持几何和角色字号，但不保证编辑后不溢出。长文先换版/拆页；有限增字需在目标应用保存重开实测。Windows PowerPoint、WPS等环境未实测时应明确说明。
+## 验证和限制
 
-## 本轮实际验证
+生成时测量、选版、字号下限和拆页，与用户编辑后的 Office autofit 分开。输出采用 `noAutofit` 和有限空间预留；约 30% 预留只是估计，不保证任意增字都不溢出。超出后需重新生成或人工重排。
 
-在独立目录通过`npm ci --ignore-scripts`安装锁定依赖，确认未借用宿主的node_modules；Node24.19.0、Python3.9.6和3.12.14环境中17项生成/内容/表格/图表/负向测试通过。6页虚构样例在Mac PowerPoint16.112实际打开、导出PDF并逐页查看，中文字体为DengXian Regular/Bold，无字体替换。字体文件不随包分发。
+本发布的虚构样例与行为测试见 [验证记录](VALIDATION.md)。本轮目标客户端为 Mac PowerPoint 16.112；Windows PowerPoint、WPS 未验证。新生成文稿仍需在目标客户端检查整套缩略图和逐页渲染。XML/脚本通过不能代替视觉验收。
 
-以上是隔离依赖目录测试，未重装操作系统；Windows PowerPoint、WPS和其他字体环境尚未验证。公开组件与私有定制稿有差别，私有稿相似度评分不适用于本包。
+已知此 Mac/PPT Master 组合的 SVG 对象动画会导致空白渲染，桥接在 macOS 拒绝非 `none` 动画。默认静态汇报；音频生成和录播未验证。不会自动上传材料给外部服务。
+
+公开版只含原创通用代码、可再分发依赖声明和虚构示例，不含个人训练文件、原始样稿截图、公司标识、商业数据或字体。它与本机内部定制包有素材和预设范围差异。
+
+## 许可
+
+原创代码采用 [MIT](LICENSE)，第三方依赖和集成见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。输入文档、字体和媒体仍须有相应使用权；技能不转授第三方素材再分发权。

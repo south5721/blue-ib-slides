@@ -1,5 +1,5 @@
 {
-  "version": "4.1.0-rc.1",
+  "version": "4.3.0",
   "units": "inch-and-point",
   "canvas": {
     "width": 13.333333,
@@ -78,5 +78,19 @@
     "DengXian",
     "PingFang SC",
     "Heiti SC"
-  ]
+  ],
+  "editorialColors": {
+    "ink": "24364B",
+    "secondary": "5A6575",
+    "pale": "F7F9FC"
+  },
+  "palettes": {
+    "template-blue": {
+      "brand": "0A579B",
+      "navy": "063F8E",
+      "tint": "DCEEFC",
+      "rule": "C9D3E4",
+      "orange": "FF7829"
+    }
+  }
 }

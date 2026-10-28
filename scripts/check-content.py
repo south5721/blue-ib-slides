@@ -12,20 +12,23 @@ def wanted(s):
  yield s.get('title','')
  for k in ['subtitle','banner','summary','commentary','unit']:
   if s.get(k):yield s[k]
- for k in ['cards','modules','bullets','steps','kpis','evidenceRows','pairs','branches','rows']:
+ for k in ['cards','modules','bullets','steps','kpis','evidenceRows','pairs','branches','rows','items','tasks','pillars']:
   for item in s.get(k,[]):
    if isinstance(item,str):yield item
    elif isinstance(item,list):yield from (str(int(v)) if isinstance(v,float) and v.is_integer() else str(v) for v in item)
    else:
-    for f in ['title','heading','body','text','metric','date','label','value','note','action','evidence','implication','cause','effect']:
+    for f in ['title','heading','body','text','metric','date','label','value','note','action','evidence','implication','cause','effect','leftTitle','leftBody','rightTitle','rightBody','start','end','owner','deliverable']:
      if item.get(f) is not None:yield item[f]
- for k in ['hub','conclusion']:
+ for k in ['hub','conclusion','foundation']:
   for v in s.get(k,{}).values():
    if isinstance(v,str):yield v
  for k in ['leftChart','rightChart']:
   if s.get(k):
    yield s[k].get('title','')
  yield from s.get('columns',[])
+ for k in ['leftHeading','rightHeading','eyebrow','footer','author','roof','centerLabel']:
+  if s.get(k):yield s[k]
+ for v in s.get('range',{}).values():yield v
 def check(deck,pptx):
  layout=json.loads(Path(str(pptx)+'.layout.json').read_text());errors=[];texts={}
  with zipfile.ZipFile(pptx) as z:
@@ -34,7 +37,10 @@ def check(deck,pptx):
  for i,s in enumerate(deck['slides'],1):
   combined=''.join(texts.get(i,[]))
   for value in wanted(s):
-   if norm(value) and norm(value) not in combined:errors.append({'inputSlide':i,'missing':str(value)})
+   if norm(value) and norm(value) not in combined:
+    segments=[g for page in layout['pages'] if page['inputSlide']==i for g in page.get('contentSegments',[])]
+    retained=any(norm(value) in norm(g['original']) and norm(''.join(g['parts']))==norm(g['original']) and all(norm(part) in combined for part in g['parts']) for g in segments)
+    if not retained:errors.append({'inputSlide':i,'missing':str(value)})
  return {'ok':not errors,'errors':errors,'scope':'Visible declared text coverage after whitespace normalization; chart series/caches/workbook are a separate check. No semantic verification of cited sources.'}
 if __name__=='__main__':
  ap=argparse.ArgumentParser();ap.add_argument('deck',type=Path);ap.add_argument('pptx',type=Path);args=ap.parse_args();out=check(json.loads(args.deck.read_text()),args.pptx);print(json.dumps(out,ensure_ascii=False,indent=2));sys.exit(0 if out['ok'] else 1)

@@ -24,3 +24,19 @@
 `layoutPolicy: reference`是显式密集案头预设：3卡正文12pt、共享枢纽16pt、4栏20/28/18pt，无增字预留。它使用公共通用组件，不包含任何私有参考稿的纹理、品牌字形或精确复刻授权。复杂架构、泳道、瀑布等未实现，需另行实现和实测。
 
 数值表格默认采用语言的标准数字表示。需要固定小数位或保留尾零时，将单元格传为明确格式的字符串，如`"2.0"`。
+
+## 4.3 新内容页面
+
+默认 designSystem: blue-editorial。palette: template-blue 为全套蓝色预设；fontProfile: business-sans 为默认，template-kai 需要已有 KaiTi 字体，也可用显式 font 覆盖。
+
+- cover: title/subtitle/eyebrow/footer。
+- agenda: items[{title,body}]。
+- comparison: leftHeading/rightHeading 与 pairs[{leftTitle,leftBody,rightTitle,rightBody}]。
+- comparisonMatrix: columns 与等长 rows；首列为共同维度。
+- timeline: range{start,end} 和 tasks[{title,start,end,owner,deliverable}]，日期为有效 YYYY-MM-DD，条带按日期比例。
+- chartBrief: categories/series[{name,values,role}]，可选 kpis[{label,value,note}]、commentary、orientation/min/max。值必须完整且有限，多系列需不同语义 role。
+- strategyHouse: roof、2–4项 pillars[{title,body}]、foundation{title,body}。
+- cycleEvidence: centerLabel、3–6项 steps[{title,date?,text}]，须确有循环关系。
+- phaseBand: 至少2项 steps[{title,date?,text}]、可选 summary，保留先后顺序。
+
+详见 examples/editorial.json。新三类关系支持完整长文本续页；其他预设超出容量时清晰失败，需要明确拆分，不承诺任意输入都自动适配。
