@@ -1,15 +1,15 @@
 {
   "name": "blue-ib-slides-skill",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "private": true,
   "license": "MIT",
-  "description": "Editable blue business presentation skill with measured adaptive layouts",
+  "description": "Editable blue business presentation skill with measured adaptive layouts and PPTD compatibility",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
     "demo": "python3 scripts/build-native.py examples/demo.json out/demo.pptx",
-    "test": "python3 tests/test_release.py && python3 tests/test_4_3.py",
+    "test": "python3 tests/test_release.py && python3 tests/test_4_3.py && python3 tests/test_4_4.py",
     "demo:editorial": "python3 scripts/build-native.py examples/editorial.json out/editorial.pptx"
   },
   "dependencies": {

@@ -1,0 +1,16 @@
+{
+  "source_archive_sha256": "5b2a7f696b112025576c4c2007bfa3a612dfa7c7e296d625f7a76162a9665aec",
+  "copied_unmodified": {
+    "scripts/inspect-source-pptx.py": "445cdd44bd53b1bfbd4c56b3985c7b04e662b4e61c4ff2a2d200aca8fca139ff",
+    "scripts/check-story.py": "1180f3c30bf5370bb5a5165f496a591b97d993aafc002824e6da4260010b5e33",
+    "reference/source-intake.md": "13933c963524394145283005cf46c90ff208e3bf8a7cae153de7fd8cd10ddb56",
+    "reference/native-table.md": "7b230d71b9ffd36db07a8dc2fdb78dbcb280d3a04e7319fcf6e39b892574fd30"
+  },
+  "export_decision": "Keep the already native-PowerPoint-validated PptxGenJS export. Do not claim the v2 artifact-tool exporter is integrated; 1440 logical units need an explicit inch adapter.",
+  "adapted": {
+    "scripts/check-pptx.py": {
+      "original_sha256": "e9e64bdbb167d2a6ce1241e70b4958040c4b4b8973383b3c1ec0ee2051398897",
+      "change": "Validate PptxGenJS single-level multiLvlStrRef categories against XLSX cells. Reject actual multi-level hierarchies; retain cache and formula checks."
+    }
+  }
+}

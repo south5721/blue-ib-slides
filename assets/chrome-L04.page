@@ -1,0 +1,152 @@
+# L04 内容页 chrome 骨架（1440×810，坐标实测自 87 页模板，findings/layouts.md §2）
+# chrome 8 件 = 必备 2（chrome-title / chrome-pageno）+ 可选 6（下方 # 可选: 块，不用即整件删除；位置钉死不可挪）
+# 展区：有 banner y 210..740；无 banner y 120..740；x 45.2..1396.1（宽 1351）——此处由构件填充
+# 品牌中立：logo 位恒用占位符 media/logo-placeholder.png（自 blue-ib-slides/assets/media/ 复制进 deck），用户替换
+pageType: content
+background:
+  type: solid
+  color: $lt1
+elements:
+  # ——— 必备①：页面标题（32pt bold，align [left, middle]）———
+  # 三色制：$inkTitle 黑（默认，即 $pageTitle）/ 整行 $titleBlue 蓝 / $accentDeep 橙前缀+黑 双色
+  - elementId: chrome-title
+    elementType: text
+    bounds: [45.2, 8.5, 1350.9, 60]
+    content:
+      text: "<p>含数字与判断的完整动作标题句，一行为主、两行封顶</p>"
+      wrap: true
+      align: [left, middle]
+      style: $pageTitle
+  # ——— 必备②：左下页码（12pt $inkSecondary；实测 13.35pt 是 WPS 缩放痕迹，定稿 12）———
+  - elementId: chrome-pageno
+    elementType: text
+    bounds: [41.0, 769.5, 79.5, 24.2]
+    content:
+      text: "<p>8</p>"
+      wrap: false
+      align: [left, top]
+      style: $pageno
+
+  # 可选: chrome-title-accent —— 标题下渐变短条（V3 族，54 页高频）。启用=保留本件；不用=整件删除。
+  # 矢量渐变 rect（$gradUnderlineFrom→$gradUnderlineTo，0° 左→右），不用原位图 title-underline-gradient.png
+  - elementId: chrome-title-accent
+    elementType: shape
+    bounds: [36.4, 104.0, 202.3, 4.4]
+    shapeName: rect
+    fill:
+      type: gradient
+      gradientType: linear
+      angle: 0
+      stops:
+        - { position: 0, color: $gradUnderlineFrom }
+        - { position: 1, color: $gradUnderlineTo }
+
+  # 可选: chrome-banner + chrome-banner-text —— 通栏观点横幅（V1 族高频，两件成组启用/成组删除）。
+  # 文案 = 本页核心结论句（含数字+判断，qa banner_text_viewpoint）；关键词 <span> $accentOnDark 黄。
+  # 贴边满幅出血（铁律 9 三出血件之一；实测原值 [-4.3,136.2,1448.7,73.7]/[0,143.1,1451.8,63.5]，
+  # 为 kimi-slides check BoundsOutside 全绿收成贴边 0..1440——渲染等价，出血由裁边吸收）。
+  # fill 变体 $brand4 或同色相明度渐变。
+  # 有 banner 时展区 y 210..740；与 chrome-kpi-band 不同时出现（两条通栏蓝带视觉重复）。
+  - elementId: chrome-banner
+    elementType: shape
+    bounds: [0, 136.2, 1440, 73.7]
+    shapeName: rect
+    fill: { type: solid, color: $brand3 }
+  - elementId: chrome-banner-text
+    elementType: text
+    bounds: [0, 143.1, 1440, 63.5]
+    content:
+      text: |-
+        <p>本页核心结论句：含数字与判断，<span style="color:$accentOnDark;">关键词</span>黄字强调</p>
+      wrap: true
+      align: [center, middle]
+      style: $bannerText
+
+  # 可选: chrome-kpi-band + chrome-kpi-cell-1..5 —— KPI 通栏数字条（六件成组启用/成组删除；压展区底缘 y≤681）。
+  # 5 格 x = 10.0/310.5/600.3/849.8/1120.8（pitch ≈295），格内：数字 statOnDark 32pt 黄 + 标签 14pt 白。
+  - elementId: chrome-kpi-band
+    elementType: shape
+    bounds: [0.1, 681.3, 1437.6, 73.4]
+    shapeName: rect
+    fill: { type: solid, color: $brand3 }
+  - elementId: chrome-kpi-cell-1
+    elementType: text
+    bounds: [10.0, 683.5, 250, 69.1]
+    content:
+      text: |-
+        <p><span style="font-size:32px; color:$accentOnDark;"><strong>88.8</strong></span><span style="font-size:16px;">%</span></p>
+        <p>指标标签一</p>
+      color: $lt1
+      fontSize: 14
+      fontFamily: Arial, 微软雅黑
+      lineHeight: 1.1
+      wrap: true
+      align: [left, middle]
+  - elementId: chrome-kpi-cell-2
+    elementType: text
+    bounds: [310.5, 683.5, 250, 69.1]
+    content:
+      text: |-
+        <p><span style="font-size:32px; color:$accentOnDark;"><strong>88.8</strong></span><span style="font-size:16px;">%</span></p>
+        <p>指标标签二</p>
+      color: $lt1
+      fontSize: 14
+      fontFamily: Arial, 微软雅黑
+      lineHeight: 1.1
+      wrap: true
+      align: [left, middle]
+  - elementId: chrome-kpi-cell-3
+    elementType: text
+    bounds: [600.3, 683.5, 250, 69.1]
+    content:
+      text: |-
+        <p><span style="font-size:32px; color:$accentOnDark;"><strong>88.8</strong></span><span style="font-size:16px;">%</span></p>
+        <p>指标标签三</p>
+      color: $lt1
+      fontSize: 14
+      fontFamily: Arial, 微软雅黑
+      lineHeight: 1.1
+      wrap: true
+      align: [left, middle]
+  - elementId: chrome-kpi-cell-4
+    elementType: text
+    bounds: [849.8, 683.5, 250, 69.1]
+    content:
+      text: |-
+        <p><span style="font-size:32px; color:$accentOnDark;"><strong>88.8</strong></span><span style="font-size:16px;">%</span></p>
+        <p>指标标签四</p>
+      color: $lt1
+      fontSize: 14
+      fontFamily: Arial, 微软雅黑
+      lineHeight: 1.1
+      wrap: true
+      align: [left, middle]
+  - elementId: chrome-kpi-cell-5
+    elementType: text
+    bounds: [1120.8, 683.5, 250, 69.1]
+    content:
+      text: |-
+        <p><span style="font-size:32px; color:$accentOnDark;"><strong>88.8</strong></span><span style="font-size:16px;">%</span></p>
+        <p>指标标签五</p>
+      color: $lt1
+      fontSize: 14
+      fontFamily: Arial, 微软雅黑
+      lineHeight: 1.1
+      wrap: true
+      align: [left, middle]
+
+  # 可选: chrome-bottom-rule —— 底部发丝线（0.75pt $chartNeutral；原为位图条，矢量化 line）。
+  - elementId: chrome-bottom-rule
+    elementType: line
+    bounds: [43.5, 746.0, 1359.8, 0.8]
+    viewBox: [1359.8, 0.8]
+    points: "0,0.4 1359.8,0.4"
+    curve: sharp
+    border: { style: solid, width: 0.75, color: $chartNeutral }
+
+  # 可选: chrome-logo —— 右下 logo 位（V4/V5 族位置实测）。恒用占位符，交付前由用户替换真实 logo。
+  - elementId: chrome-logo
+    elementType: image
+    bounds: [1221.0, 756.5, 186.3, 50.8]
+    src: "media/logo-placeholder.png"
+    fit: { mode: contain }

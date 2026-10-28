@@ -1,6 +1,6 @@
 # blue-ib-slides
 
-可编辑蓝调商务 PPT 技能，公开版 **4.3.0**，MIT 许可。默认蓝色标签、橙色动作词与清晰的图解关系；按真实文字测量选择版式、重排和拆页，保留事实及数值。
+可编辑蓝调商务 PPT 技能，公开版 **4.4.0**，MIT 许可。默认蓝色标签、橙色动作词与清晰的图解关系；按真实文字测量选择版式、重排和拆页，保留事实及数值。
 
 ![虚构公开示例](examples/preview.png)
 
@@ -10,7 +10,7 @@
 
 > 请安装 blue-ib-slides，地址是：https://github.com/south5721/blue-ib-slides 。如已安装，请先完整备份并保留我的定制，再升级。
 
-也可从 [Releases](https://github.com/south5721/blue-ib-slides/releases/latest) 下载，将其中的 `blue-ib-slides` 文件夹放入个人技能目录，例如 `~/.codex/skills/`。替换旧版前先备份。安装后新建 Codex 会话，确保重新加载技能。
+也可下载 [ZIP 安装包](https://github.com/south5721/blue-ib-slides/releases/download/v4.4.0/blue-ib-slides-4.4.0.zip) 或 [.skill 安装包](https://github.com/south5721/blue-ib-slides/releases/download/v4.4.0/blue-ib-slides-4.4.0.skill)，将其中的 `blue-ib-slides` 文件夹放入个人技能目录，例如 `~/.codex/skills/`。替换旧版前先备份。安装后新建会话，确保重新加载技能。
 
 需要 **Node.js >=22、Python >=3.9**，以及系统中已有、允许使用的中文字体：
 
@@ -36,6 +36,13 @@ npm run demo:editorial
 参考指定风格：
 
 > 请用 $blue-ib-slides 学习附件的布局、字阶和组件关系，主色保持蓝色。区分同内容复现与新内容迁移，展示实际渲染后的对照。
+
+## 4.4 的能力
+
+- 保留 4.3 全部公开原生接口与行为测试，新增既有 `.pptd/.page` 项目的版式配方、兼容诊断和质量门；新任务默认原生 PPTX 主流程，不混用坐标或导出链。
+- 新增渲染真值扫描、文本/图表几何、旧 PPTX 诊断工具。PowerPoint 深检不终止或退出整个应用；旧远程导出固定退役，不读取凭据。
+- 修复通用分隔页副标题遗漏，新增对应公开回归。
+- 公开版不含内部偏好、本机路径、第三方原稿参考页、历史位图资产或字体；PPTD 兼容项目沿用用户已有媒体。
 
 ## 4.3 的能力
 

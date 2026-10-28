@@ -132,7 +132,7 @@ function kpis(s,q){
 for(const q of plan.pages){
  const s=pptx.addSlide();num++;objects=[];
  if(q.p.mode==='cover')cover(s,q);
- else if(q.p.mode==='divider'){s.background={color:C.white};text(s,'section-number',q.s.number||String(num),.8,1.4,2.4,.9,44,{bold:true,color:C.brand});const m=measure(q.s.title,11.6,36,plan.font,true);text(s,'section-title',q.s.title,.8,3.1,11.6,m.height,36,{bold:true,color:C.navy})}
+ else if(q.p.mode==='divider'){s.background={color:C.white};text(s,'section-number',q.s.number||String(num),.8,1.4,2.4,.9,44,{bold:true,color:C.brand});const m=measure(q.s.title,11.6,36,plan.font,true);text(s,'section-title',q.s.title,.8,3.1,11.6,m.height,36,{bold:true,color:C.navy});if(q.s.subtitle){const sm=measure(q.s.subtitle,10.8,20,plan.font);text(s,'section-subtitle',q.s.subtitle,.8,3.1+m.height+.35,10.8,sm.height,20,{color:C.secondary})}}
  else if(q.p.mode.startsWith('blue'))renderBlue(s,q,{pptx,R,root,measure,font:plan.font,objects,nativeStyle,deck,num});
  else if(q.p.mode.startsWith('editorial'))renderEditorial(s,q,{pptx,R,root,measure,font:plan.font,objects,deck,num,text,chrome,colors:{...C,...theme.editorialColors,blue:C.brand}});
  else if(q.p.mode.startsWith('template'))renderTemplateRelations(s,q,{pptx,R,root,measure,font:plan.font,objects,deck,num,text,chrome,colors:{...C,...theme.editorialColors,blue:C.brand}});

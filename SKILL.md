@@ -1,8 +1,6 @@
 ---
 name: blue-ib-slides
-description: 制作、改造或评审可编辑蓝调商务 PPTX，按真实文字测量选择版式、重排和拆页，并检查实际渲染。适用于用户指定 blue-ib-slides、蓝调咨询图解或参考附件布局的演示文稿。
-metadata:
-  version: 4.3.0
+description: 制作、改造或评审可编辑蓝调商务 PPTX，按真实文字测量选择版式、重排和拆页，并检查实际渲染；兼容既有 PPTD 项目的配方与质量门。适用于用户指定 blue-ib-slides、蓝调咨询图解或参考附件布局的演示文稿。
 ---
 
 # Blue IB Slides
@@ -16,6 +14,7 @@ metadata:
 - 新稿：组织有证据的叙事，再生成 deck.json，运行 `python3 scripts/build-native.py deck.json out/deck.pptx`。可用 `--story story.json` 检查事实覆盖和算术。
 - 新内容适配：默认 `designSystem: "blue-editorial"`。按内容测量，过长先变换版式或续页；同级字体一致，不静默删事实和数字。战略屋、闭环证据、阶段带须分别有真实共同目标、循环关系和先后阶段。
 - 原有图解：`designSystem: "blue-ib"` 保持并列、证据行、因果、中心、双图路线。明确 `layoutPolicy: "reference"` 才使用紧凑复现预设；只适用于案头，不能冒称投影可读。
+- 既有 PPTD：维护 `.pptd/.page` 项目时读 `reference/legacy-pptd-workflow.md`、`reference/legacy-generation.md` 与 `reference/legacy-qa-gate.md`。原生尺寸为英寸/pt，PPTD 配方为 1440×810；不得混用两套坐标、导出链或质量门。公开版不含历史位图资产，只保留配方、兼容诊断与 QA；沿用用户项目已有媒体，不恢复旧远程导出。
 - 模板复现：先只读盘点附件、渲染原稿、建立页与对象对应，再填充副本。不要将通用重排规则强加到同内容复现；超出模板容量时说明变化。原生模板可选本地 PPT Master 桥接，读 [集成说明](references/ppt-master.md)。
 
 ## 构建和字体

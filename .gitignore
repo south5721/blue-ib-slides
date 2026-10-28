@@ -2,10 +2,13 @@ node_modules/
 __pycache__/
 *.pyc
 out/
+test-output/
 .env
 .env.*
 .DS_Store
 *.pptx
 *.pdf
 *.zip
+*.skill
+*.pptx.native-styles.json
 !examples/demo.pptx

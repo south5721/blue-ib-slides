@@ -1,0 +1,72 @@
+# blue-ib-slides — canonical PPTD theme（1440×810）
+# 复制到每个 deck 的 presentation.pptd 头部。颜色/字阶即设计 token，禁止在 page 里写游离字面值。
+# 全部 token 抽象自 87 页授权参考模板，近似蓝已按用途归并为 5 档品牌蓝。
+version: v2
+title: Blue IB
+size: [1440, 810]
+pages: []
+theme:
+  colors:
+    # —— 纸墨 ——
+    dk1: "#000000"        # 极少用（标题黑变体）
+    lt1: "#FFFFFF"        # 纸面 / on-dark 文字 / 白面板
+    inkBody: "#404040"    # 正文主墨色（实测 n=1801，中位 14pt）
+    inkTitle: "#2F2F2F"   # 页面标题黑
+    inkSecondary: "#5A5A5A" # 页码/注释灰
+    # —— 品牌蓝 5 档（原模板 10+ 近似蓝归并）——
+    brand1: "#3865BB"     # 主蓝：装饰、chevron、大色块、chart 主系列
+    brand2: "#3477C7"     # chip/徽章填充蓝
+    brand3: "#0C75CB"     # 亮蓝：通栏 banner、KPI 带、圆点
+    brand4: "#0070C0"     # 深蓝 banner 变体、标题下划线
+    navy: "#063F8E"       # 深 navy：chart 轴、面板描边、深蓝面板
+    titleBlue: "#3570C0"  # 页面标题蓝（32pt 档专用）
+    itemBlue: "#3577C7"   # 条目名/小标题蓝（浅底上）
+    # —— 面板体系 ——
+    tintPanel: "#EDF2F8"  # 浅蓝 tint 面板
+    tintPanelDeep: "#D6E4F7" # 浅蓝底板（≈accent1 lumMod20/80）
+    rulePanel: "#5B9BD5"  # 白面板标准蓝边框（0.75pt）
+    # —— 强调（双强调制）——
+    accent: "#FF7829"     # 浅底关键词强调橙（可作文字色！与 K 相反）
+    accentDeep: "#ED7D31" # 标题前缀橙（双色标题）
+    accentOnDark: "#FFC000" # 深蓝底上的强调黄（数字/关键词，on-dark 专用）
+    positive: "#00B050"   # 正向/达成（仅语义）
+    negative: "#C00000"   # 风险/负增量（仅语义，瀑布负柱也用）
+    # —— chart ——
+    chartNeutral: "#BFBFBF" # 别家/参考系列灰（实测发丝线灰）
+    # —— 封面专用 ——
+    coverTitleBlue: "#155D9E" # 封面大标题蓝
+    tocActive: "#0A579B"  # 封面目录当前条目蓝
+    tocInactive: "#A6A6A6" # 封面目录非当前条目灰
+    # —— 渐变端点（同色相明度渐变用）——
+    gradChipLight: "#5492DC"  # chip 渐变亮端
+    gradParalFrom: "#5A80CD"  # 平行四边形标签渐变亮端
+    gradParalTo: "#2F5192"    # 平行四边形标签渐变暗端
+    gradUnderlineFrom: "#00B0F0" # 标题下渐变短条亮端（青）
+    gradUnderlineTo: "#2E75B6"   # 标题下渐变短条暗端（蓝）
+    onDarkChip: "#3577C7" # 深蓝面板内嵌胶囊（同 itemBlue，独立名以便区分语义）
+  textStyles:
+    # 2026-10-19 用户验收裁决：正文基准上抬——body 16 / bodyDense 14 / caption 12 / itemTitle 14 / chipLabel 16 / tableBody 14（模板实测主峰 12/14 保留于 design-tokens 备考）
+    # —— 页面 chrome ——
+    pageTitle:      { color: $inkTitle, fontSize: 32, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }   # 变体：$titleBlue 蓝 / $accentDeep 橙前缀+黑
+    bannerText:     { color: $lt1, fontSize: 24, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }        # 通栏观点句，关键词 $accentOnDark
+    pageno:         { color: $inkSecondary, fontSize: 12, fontFamily: {latin: Arial, ea: 微软雅黑} }           # 左下页码（实测 13.35pt 为 WPS 缩放痕迹，定稿 12）
+    # —— 展区标签 ——
+    sectionLabel:   { color: $accent, fontSize: 16, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }     # 橙色小节标
+    chipLabel:      { color: $lt1, fontSize: 16, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }        # 蓝 chip 内白字
+    chipLabelGold:  { color: $accentOnDark, fontSize: 16, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true } # 深蓝 chip 内黄字
+    itemTitle:      { color: $itemBlue, fontSize: 14, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }   # 蓝色条目名/小标题
+    # —— 正文 ——
+    body:           { color: $inkBody, fontSize: 16, fontFamily: {latin: Arial, ea: 微软雅黑}, lineHeight: 1.25 }
+    bodyDense:      { color: $inkBody, fontSize: 14, fontFamily: {latin: Arial, ea: 微软雅黑}, lineHeight: 1.25 }
+    bodyEmphasis:   { color: $accent, fontSize: 16, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }     # 正文内嵌橙词
+    caption:        { color: $inkSecondary, fontSize: 12, fontFamily: {latin: Arial, ea: 微软雅黑} }
+    # —— 数字 ——
+    statNumeral:    { color: $brand1, fontSize: 24, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }     # 浅底大数字
+    statOnDark:     { color: $accentOnDark, fontSize: 32, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true } # 深底大数字（KPI 带）
+    # —— 封面/隔页 ——
+    coverH1:        { color: $coverTitleBlue, fontSize: 36, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }
+    dividerNum:     { color: $brand1, fontSize: 44, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }     # 隔页章节号
+    dividerH:       { color: $titleBlue, fontSize: 40, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }  # 隔页章节名
+    # —— 表格 ——
+    tableHeader:    { color: $lt1, fontSize: 14, fontFamily: {latin: Arial, ea: 微软雅黑}, bold: true }        # 蓝底表头白字
+    tableBody:      { color: $inkBody, fontSize: 14, fontFamily: {latin: Arial, ea: 微软雅黑} }

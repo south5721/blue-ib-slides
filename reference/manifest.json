@@ -1,0 +1,1298 @@
+{
+  "version": 2,
+  "updated": "2026-10-20",
+  "purpose": "构件契约清单——语义路由（内容卡语义 → 选件）与泛化回归测试的唯一基准。构造配方仍以 reference/*.md 为权威；本文件只做路由辅助与测试基准，不引入新 QA 规则。唯一设计权威 = SKILL.md 十条铁律 + design-tokens.md。 v2：融合 ppt-master 策划/图解纪律（planning.md / diagrams.md / shape-vocabulary.md；D 族图解构件）。",
+  "composition_model": {
+    "layout_rule": "每页恰好一个 layout。composition=fixed 的布局（L01/L02/L03 + chrome）照抄骨架改文案，不参与自由组合；L04 是唯一自由组合画布。",
+    "slot_rule": "band-full 独占展区主位；band-column 与 band-column/band-strip 自由共存；band-strip 每页 ≤2 条且可与 band-full/band-column 共存；inline 不占槽位（活在其他组件内）。一栏只放一个主展区（铁律 9）。条目级 composes_with 契约优先于槽位独占的字面表述。",
+    "density_rule": "组件数量不设硬上限（1–4 是经验指导），密度由 qa.mjs page_density/page_sparse 机械闸兜底；本模板实测密度高，IC 档目标元素中位 ~70、短条 ~14。",
+    "canonical_rule": "composition=canonical 的构件内部构造永远按 reference 配方，自由的是「选哪几件、怎么摆」，不是「改写构件本身」。",
+    "composes_rule": "composes_with 是「已验证合法组合」的非穷尽清单，任一侧条目列出即视为契约内；不在清单不等于非法——清单外组合按 slot/conflicts/密度规则裁决，首次走出后回补清单。"
+  },
+  "global_qa_rules": [
+    "yaml_parse",
+    "bounds_check",
+    "style_ref_exists",
+    "min_font",
+    "font_scale_whitelist",
+    "palette_closed",
+    "shape_rules",
+    "font_family_discipline",
+    "img_src_exists",
+    "media_image_weight",
+    "svg_no_comments",
+    "element_collision",
+    "z_order_cover",
+    "z_order_occlusion",
+    "text_width_estimate",
+    "title_render_lines",
+    "placeholder_leftover",
+    "no_nbsp",
+    "rule_as_rect",
+    "peer_font_consistency",
+    "page_density",
+    "page_sparse",
+    "ai_slop",
+    "dash_density",
+    "not_but_parallel",
+    "explainer_preamble",
+    "dual_accent_limit",
+    "logo_placeholder_left",
+    "text_contrast",
+    "orphan_line",
+    "plan_contract",
+    "page_rhythm_mismatch",
+    "page_rhythm_flat",
+    "closing_missing"
+  ],
+  "entries": [
+    {
+      "id": "L01",
+      "kind": "layout",
+      "name": "封面（白底+底部双蓝光弧背景）",
+      "composition": "fixed",
+      "ref": "reference/layouts.md",
+      "example": "assets/examples/L01-cover.page",
+      "semantics": [
+        "封面",
+        "cover",
+        "标题页"
+      ],
+      "data_shapes": [
+        "none"
+      ],
+      "slot": "page",
+      "composes_with": [],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "chrome 契约：0 chrome（无 chrome-title、无 chrome-pageno、无 logo）",
+        "背景 assets/media/cover-bg-arc.jpeg [0,0,1440,810] fit fill（恒最底层）",
+        "标题 coverH1 36pt $coverTitleBlue [96,28.5,1100,120]；副题/日期 caption 档 $inkSecondary [96,150]",
+        "可选编号目录列表 [96,220,1150,400] 28pt：当前条 $tocActive、其余 $tocInactive，行距 ~1.9"
+      ],
+      "qa_rules": [
+        "bounds_check",
+        "palette_closed",
+        "img_src_exists",
+        "font_scale_whitelist",
+        "text_width_estimate",
+        "logo_placeholder_left"
+      ]
+    },
+    {
+      "id": "L02",
+      "kind": "layout",
+      "name": "目录页（parallelogram 编号 chip + 观点句条目）",
+      "composition": "fixed",
+      "ref": "reference/layouts.md",
+      "example": "assets/examples/L02-toc.page",
+      "semantics": [
+        "目录",
+        "toc",
+        "contents"
+      ],
+      "data_shapes": [
+        "none"
+      ],
+      "slot": "page",
+      "composes_with": [
+        "C12"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "chrome 契约：用 L04 chrome——chrome-title「目录」$titleBlue + chrome-title-accent 渐变条 + chrome-pageno；无 banner",
+        "4–6 行：编号 chip = parallelogram [45.2,y,220,60] 45° 渐变 $gradParalFrom→$gradParalTo，白 20pt bold 居中",
+        "条目文本 18pt $inkTitle [290,y,1000,60]，每条 = 含数字+判断的观点句（toc_msg_viewpoint 闸）",
+        "行底发丝线 0.5pt $chartNeutral（line 元素）；首行 y=160，行高 95"
+      ],
+      "qa_rules": [
+        "chrome_complete",
+        "toc_msg_viewpoint",
+        "chrome_title_position",
+        "chrome_pageno_position",
+        "title_align",
+        "element_collision"
+      ]
+    },
+    {
+      "id": "L03",
+      "kind": "layout",
+      "name": "章节隔页（大号章节号 + 底部通栏蓝带）",
+      "composition": "fixed",
+      "ref": "reference/layouts.md",
+      "example": "assets/examples/L03-divider.page",
+      "semantics": [
+        "隔页",
+        "章节页",
+        "divider",
+        "section"
+      ],
+      "data_shapes": [
+        "none"
+      ],
+      "slot": "page",
+      "composes_with": [],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "chrome 契约：0 chrome（无页码）",
+        "左缘 x=96：dividerNum 44pt $brand1 [96,240]；dividerH 章节名 40pt $titleBlue [96,300,1000,120]",
+        "底部通栏 $brand3 rect [0,681.3,1440,73.4] + 白 16pt 章节英文/简述居中"
+      ],
+      "qa_rules": [
+        "bounds_check",
+        "palette_closed",
+        "font_scale_whitelist"
+      ]
+    },
+    {
+      "id": "L04",
+      "kind": "layout",
+      "name": "内容页（唯一自由组合画布）",
+      "composition": "canonical",
+      "ref": "reference/layouts.md",
+      "example": "assets/chrome-L04.page",
+      "semantics": [
+        "内容页",
+        "展览页",
+        "论证页"
+      ],
+      "data_shapes": [
+        "none"
+      ],
+      "slot": "page",
+      "composes_with": [],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "chrome 契约：必备 chrome-title [45.2,8.5,1350.9,60]（pageTitle 32pt，align left+middle；$titleBlue 整行 / $accentDeep 前缀+$inkTitle 双色合法）+ chrome-pageno [41,769.5,79.5,24.2]（pageno 12pt 左下）",
+        "可选 chrome-title-accent 渐变短条 [36.4,104,202.3,4.4]（$gradUnderlineFrom→$gradUnderlineTo 0° 矢量 rect）",
+        "可选 chrome-banner [0,136.2,1440,73.7] $brand3 + chrome-banner-text bannerText 居中（文案=含数字+判断的结论句）",
+        "可选 chrome-bottom-rule [43.5,746,1359.8,0] 0.75pt $chartNeutral；可选 chrome-logo [1221,756.5,186.3,50.8] 恒 logo-placeholder.png；可选 chrome-kpi-band 见 C05",
+        "展区：有 banner y 220..740；无 banner y 120..740；x 45.2..1396.1（宽 1351）；出血件仅限 banner/KPI 带/封面背景"
+      ],
+      "qa_rules": [
+        "chrome_complete",
+        "title_align",
+        "chrome_title_position",
+        "chrome_pageno_position",
+        "banner_text_viewpoint",
+        "dual_accent_limit",
+        "page_density",
+        "page_sparse",
+        "element_collision",
+        "z_order_cover",
+        "text_width_estimate",
+        "title_render_lines"
+      ]
+    },
+    {
+      "id": "C01",
+      "kind": "component",
+      "name": "通栏观点横幅（header band）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/C02-card-array.page",
+      "semantics": [
+        "核心结论",
+        "通栏标题",
+        "观点横幅",
+        "key message",
+        "章节首条"
+      ],
+      "data_shapes": [
+        "qualitative"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C02",
+        "C03",
+        "C15",
+        "T2a"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "rect [0,136.2,1440,73.7] solid $brand3（变体 $brand4 或 90° 同色相渐变）",
+        "文案 bannerText 24pt 白 bold 居中，关键词 $accentOnDark；一行放不下降 20pt，禁两行以上",
+        "文案 = 本页核心结论句（含数字+判断，banner_text_viewpoint 闸）"
+      ],
+      "qa_rules": [
+        "palette_closed",
+        "banner_text_viewpoint",
+        "dual_accent_limit",
+        "text_width_estimate",
+        "dark_text_gold"
+      ]
+    },
+    {
+      "id": "C02",
+      "kind": "component",
+      "name": "药丸徽章圆角卡片阵列（pill-badge card array）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/C02-card-array.page",
+      "semantics": [
+        "并列分栏",
+        "业务线",
+        "产品矩阵",
+        "策略支柱",
+        "3-5列对比"
+      ],
+      "data_shapes": [
+        "comparison",
+        "qualitative"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C01",
+        "C15",
+        "C16"
+      ],
+      "conflicts_with": [
+        "C09",
+        "C10",
+        "C11",
+        "C02b"
+      ],
+      "hard_constraints": [
+        "列网格：3 列 x 45/500/955 宽 420；4 列 45/390/735/1080 宽 316（gap 29）；5 列 45/315/585/855/1125 宽 270；卡高顶到展区底（有 banner 250..720 / 无 banner 150..710，底留 ~24）",
+        "卡 roundRect adj 9000（小圆角），90° 渐变 $tintPanel→$tintPanelDeep，0.75pt $navy 边，蓝柔影",
+        "徽章悬贴（2026-10-20 终裁）：胶囊 206×52 $brand2，完全位于卡顶之上（底 = 卡顶 − 11，间隙 10–12），z 序在卡之后；禁吊坠 chevron；title-accent 页卡顶 ≥172、banner 页卡顶 ≥275 让位",
+        "副题 16pt $accent bold 居中（y_card+70）+ 42×2.5 $gradChipLight 下划线（y_card+98）",
+        "卡内填满：4 组 bullet（y_card+122 起均分至卡底−24），每组=渐变圆点 ellipse 10×9（$gradChipLight→$brand2，禁字面「·」）+ $itemBlue 条目名 + $bodyDense 14pt lh1.3 + $accent 关键词"
+      ],
+      "qa_rules": [
+        "peer_font_consistency",
+        "element_collision",
+        "min_font",
+        "font_scale_whitelist",
+        "palette_closed",
+        "shape_rules"
+      ]
+    },
+    {
+      "id": "C02b",
+      "kind": "component",
+      "name": "深蓝卡变体（navy card + chip 矩阵，模板 p63 版式）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "并列分栏",
+        "机制清单",
+        "动作细目",
+        "关键词矩阵",
+        "chip matrix",
+        "重磅卡"
+      ],
+      "data_shapes": [
+        "comparison",
+        "qualitative",
+        "chip_matrix"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C01",
+        "C15"
+      ],
+      "conflicts_with": [
+        "C09",
+        "C10",
+        "C02"
+      ],
+      "hard_constraints": [
+        "卡 roundRect adj 9000 solid $navy + 蓝柔影，无边；列网格同 C02；一节 deck 至多一页",
+        "徽章悬贴同 C02（底 = 卡顶 − 11，禁吊坠 chevron），胶囊 90° 渐变 $gradChipLight→$brand1，白+$accentOnDark 关键词",
+        "卡内 = 白点 ellipse 10×9 $lt1 + 条目名（$chipLabel 16 白 bold + $accentOnDark 关键词）+ 2 列 chip 矩阵",
+        "chip：roundRect adj 20000，174×48，solid $onDarkChip，白 14pt；2 列 x_card+24/+222，行距 62，2×2 或 2×3；文案 ≤8 字",
+        "强调行（大数字/问责句）14–20pt $accentOnDark 置矩阵下"
+      ],
+      "qa_rules": [
+        "peer_font_consistency",
+        "element_collision",
+        "min_font",
+        "font_scale_whitelist",
+        "palette_closed",
+        "shape_rules",
+        "dark_text_gold"
+      ]
+    },
+    {
+      "id": "C03",
+      "kind": "component",
+      "name": "chevron 燕尾标签行（chevron-labeled row）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/C03-chevron-rows.page",
+      "semantics": [
+        "步骤",
+        "阶段",
+        "递进要点",
+        "流程列表",
+        "优先级"
+      ],
+      "data_shapes": [
+        "sequence",
+        "qualitative"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C01",
+        "C15",
+        "C16",
+        "C08"
+      ],
+      "conflicts_with": [
+        "C04"
+      ],
+      "hard_constraints": [
+        "每行 = chevron 220×88 $brand2（20pt 白+$accentOnDark 关键词）+ 内容条 roundRect x292 宽 1104（$lt1+0.75pt $rulePanel 边）；平接留缝 14 禁咬合（2026-10-20 终裁）",
+        "3 行 h180 pitch200 / 4 行 h135 pitch155 / 5 行 h100 pitch120；首行 y 无 banner 130、有 banner 240",
+        "行首字面「· 」bullet 禁 ul/li；条目名 $itemTitle（可渐变文字），强调 16pt $accent bold"
+      ],
+      "qa_rules": [
+        "text_width_estimate",
+        "element_collision",
+        "peer_font_consistency"
+      ]
+    },
+    {
+      "id": "C04",
+      "kind": "component",
+      "name": "圆节点时间轴（circle-node timeline）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/C04-timeline-kpi.page",
+      "semantics": [
+        "时间线",
+        "里程碑",
+        "流程阶段",
+        "timeline",
+        "募投节奏"
+      ],
+      "data_shapes": [
+        "sequence"
+      ],
+      "slot": "band-strip",
+      "composes_with": [
+        "C05",
+        "C01"
+      ],
+      "conflicts_with": [
+        "C03"
+      ],
+      "hard_constraints": [
+        "载带 rightArrow [10,384,1420,66] $tintPanelDeep（stripedRightArrow 的 canonical 近似）",
+        "节点 ellipse 76×64 $brand3+1pt 白边，腾空：节点底=载带顶−8，0×8 短竖线连接，禁压带（2026-10-20 终裁）；节点字 12pt bold $accentOnDark ≤2 行",
+        "连接柱 line 0.75pt $brand3 长 25；说明卡 roundRect ≤200×84（$lt1+0.75pt $rulePanel 边）"
+      ],
+      "qa_rules": [
+        "font_scale_whitelist",
+        "element_collision",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "C05",
+      "kind": "component",
+      "name": "KPI 通栏数字条（bottom KPI strip）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/C04-timeline-kpi.page",
+      "semantics": [
+        "关键数字",
+        "KPI 一览",
+        "成果收口",
+        "big numbers"
+      ],
+      "data_shapes": [
+        "kpi_list"
+      ],
+      "slot": "band-strip",
+      "composes_with": [
+        "C04",
+        "C02",
+        "R1"
+      ],
+      "conflicts_with": [
+        "chrome-bottom-rule"
+      ],
+      "hard_constraints": [
+        "底条 rect [0.1,681.3,1437.6,73.4] solid $brand3 页尾收口位钉死",
+        "≤6 格；5 格 x 10/310/600/850/1121 宽 ~250；格间 0.75pt $lt1 竖线高 60；格文本框 y=带顶−8（673.5），渲染底 ≤744（2026-10-20 终裁）",
+        "数字 statOnDark 32pt $accentOnDark bold + 标签 14pt 白（dark_text_gold：深底大数字恒黄）"
+      ],
+      "qa_rules": [
+        "min_font",
+        "text_width_estimate",
+        "dark_text_gold",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "C06",
+      "kind": "component",
+      "name": "奖章对比盘（medal + parallelogram bars）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "两方对比",
+        "AB 方案",
+        "前后对照",
+        "versus"
+      ],
+      "data_shapes": [
+        "comparison",
+        "qualitative"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C01",
+        "C15",
+        "C12"
+      ],
+      "conflicts_with": [
+        "C08",
+        "C10"
+      ],
+      "hard_constraints": [
+        "奖章 ellipse 255 渐变 $accentDeep→$accent 45° + 3 段 arc rot 0/120/240",
+        "左右条 parallelogram 315–427×52 渐变 $gradParalFrom→$gradParalTo；条端靶心双 ellipse",
+        "奖章 24pt 白 ≤3 行中央结论；两侧条数相等 2–4 条/侧"
+      ],
+      "qa_rules": [
+        "palette_closed",
+        "shape_rules",
+        "element_collision"
+      ]
+    },
+    {
+      "id": "C07",
+      "kind": "component",
+      "name": "3D 光泽环形（glossy donut，纯矢量重建）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "三段构成",
+        "份额结构",
+        "装饰性环形",
+        "封面级视觉锚"
+      ],
+      "data_shapes": [
+        "share",
+        "qualitative"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C16",
+        "C02"
+      ],
+      "conflicts_with": [
+        "C09",
+        "R5"
+      ],
+      "hard_constraints": [
+        "≤3 段 pie/custom 扇形，90° 渐变 $brand1→$navy / $brand2→$brand1 / $gradChipLight→$brand2",
+        "光环 = 2–3 个 noFill ellipse 轨道 1.75pt $rulePanel 错位 rot",
+        "原模板光环位图未入包，v1 纯矢量重建禁外挂图片；真数据表达优先 R5"
+      ],
+      "qa_rules": [
+        "palette_closed",
+        "shape_rules",
+        "img_src_exists"
+      ]
+    },
+    {
+      "id": "C08",
+      "kind": "component",
+      "name": "光泽球体三件套（glossy sphere，纯矢量）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/C08-sphere.page",
+      "semantics": [
+        "核心概念",
+        "中心思想",
+        "总结论锚点",
+        "投资主题"
+      ],
+      "data_shapes": [
+        "qualitative"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C03",
+        "C16",
+        "C02"
+      ],
+      "conflicts_with": [
+        "C09",
+        "C10",
+        "C06"
+      ],
+      "hard_constraints": [
+        "两件套同心（2026-10-20 终裁）：halo 单环 330 noFill + 1.5pt $brand1 边；核 241 渐变 $gradChipLight→$brand1 + 蓝柔影；浅壳与多层环留档 variant",
+        "大版 halo ≤457 按槽位等比缩放",
+        "核上文字 ≤3 行，白 + $accentOnDark 强调，主行 ≤28pt bold",
+        "可选侧弧光 assets/media/dots-circle-white.png ×2"
+      ],
+      "qa_rules": [
+        "palette_closed",
+        "img_src_exists",
+        "shape_rules"
+      ]
+    },
+    {
+      "id": "C09",
+      "kind": "component",
+      "name": "漏斗图（funnel，形状+PNG 混合）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "转化漏斗",
+        "筛选收敛",
+        "funnel",
+        "候选到中标"
+      ],
+      "data_shapes": [
+        "funnel",
+        "sequence"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C01",
+        "C15"
+      ],
+      "conflicts_with": [
+        "C08",
+        "C10",
+        "C07"
+      ],
+      "hard_constraints": [
+        "顶平台 ellipse 1395×111+1265×83；漏斗体 triangle flipV 646×391 渐变 $rulePanel→$tintPanel",
+        "底平台 ellipse 1327×199 + ring-outline-white.png + ring-glow-base.png + 收口盘 245×28 $brand1 opacity0.5",
+        "说明卡 roundRect 419×194，卡头胶囊 412×42 渐变 $brand2→$brand1",
+        "依赖 assets/media/ring-outline-white.png + ring-glow-base.png，缺图降级纯形状"
+      ],
+      "qa_rules": [
+        "img_src_exists",
+        "element_collision",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "C10",
+      "kind": "component",
+      "name": "流程方块 + 中心枢纽圆（process squares + hub）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "汇聚",
+        "组合拳",
+        "合力",
+        "2-3输入1结论",
+        "convergence"
+      ],
+      "data_shapes": [
+        "convergence",
+        "qualitative"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C01",
+        "C15",
+        "C16"
+      ],
+      "conflicts_with": [
+        "C08",
+        "C09",
+        "C06",
+        "C02"
+      ],
+      "hard_constraints": [
+        "方块 roundRect 254×184 渐变 $gradChipLight→$brand1；间联双 chevron（11×19+15×27）",
+        "枢纽 ellipse 278×262 渐变；halo 单环 1.5pt $brand1（2026-10-20 终裁，3 段 arc 留档 variant）",
+        "块上 20pt $accentOnDark 标签 + 28pt 白 bold 标题；枢纽文字 ≤3 行"
+      ],
+      "qa_rules": [
+        "palette_closed",
+        "shape_rules",
+        "element_collision"
+      ]
+    },
+    {
+      "id": "C11",
+      "kind": "component",
+      "name": "图标列 + 椭圆底座（icon columns on ellipse platform）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/C11-icon-columns.page",
+      "semantics": [
+        "能力支柱",
+        "并列原则",
+        "4-6列图标",
+        "icon columns"
+      ],
+      "data_shapes": [
+        "qualitative",
+        "comparison"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C01",
+        "C15"
+      ],
+      "conflicts_with": [
+        "C02"
+      ],
+      "hard_constraints": [
+        "底座 4 个同心 noFill ellipse（1145×118/913×94/750×77/495×51，0.5pt $rulePanel）",
+        "图标圆 117×109 $brand2 opacity0.5 + 白字形 58–67；标题胶囊 207×52 $brand2 20pt 白",
+        "总标题 28pt $accent bold；列注 18pt $inkTitle；列分隔 1pt $rulePanel 竖线"
+      ],
+      "qa_rules": [
+        "img_src_exists",
+        "peer_font_consistency",
+        "element_collision"
+      ]
+    },
+    {
+      "id": "C12",
+      "kind": "component",
+      "name": "平行四边形标签（parallelogram label）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/L02-toc.page",
+      "semantics": [
+        "编号 chip",
+        "动感标签",
+        "卡头标签",
+        "章节大标签"
+      ],
+      "data_shapes": [
+        "qualitative"
+      ],
+      "slot": "inline",
+      "composes_with": [
+        "C02",
+        "C06",
+        "L02",
+        "T2a"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "parallelogram 45° 渐变 $gradParalFrom→$gradParalTo；三档 220×60 / 385×110 / 277×106",
+        "内文恒白 bold 居中；文字框内缩 ≥20 防斜边切字"
+      ],
+      "qa_rules": [
+        "palette_closed",
+        "shape_rules",
+        "text_width_estimate"
+      ]
+    },
+    {
+      "id": "C13",
+      "kind": "component",
+      "name": "中心辐射 + 点阵地图（hub-spoke with dotted map）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "总部分支",
+        "平台子业务",
+        "全国布局",
+        "全球布局",
+        "hub-spoke"
+      ],
+      "data_shapes": [
+        "hub-spoke",
+        "qualitative"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C01",
+        "C15"
+      ],
+      "conflicts_with": [
+        "C10"
+      ],
+      "hard_constraints": [
+        "底图 worldmap-dots-blue.png [0,546,1440,404] 贴底恒最底层",
+        "中心胶囊 570×61 渐变 $gradChipLight→$brand1；4 白卡 317×322 卡头徽章 218×51 $brand1",
+        "连接线 line dash 1pt $rulePanel；pin = teardrop 44×63 rot135 渐变 $gradChipLight→$brand2"
+      ],
+      "qa_rules": [
+        "img_src_exists",
+        "element_collision",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "C14",
+      "kind": "component",
+      "name": "原子轨道装饰（atom ornament）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "科技感装饰",
+        "纯装饰"
+      ],
+      "data_shapes": [
+        "none"
+      ],
+      "slot": "inline",
+      "composes_with": [
+        "C15",
+        "C03"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "禁单独成页、禁承载数据",
+        "竖直轨道 ellipse 100×498 $tintPanel+3pt $gradChipLight 边；arc×2 rot 347/13；中心圆 204 渐变可载 $accentOnDark 词"
+      ],
+      "qa_rules": [
+        "shape_rules",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "C15",
+      "kind": "component",
+      "name": "浅蓝大底板（panel base）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "内容分区打底",
+        "底板",
+        "panel base"
+      ],
+      "data_shapes": [
+        "none"
+      ],
+      "slot": "inline",
+      "composes_with": [
+        "C01",
+        "C02",
+        "C03",
+        "C06",
+        "C09",
+        "C10",
+        "C11",
+        "C13",
+        "T2a"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "恒最底层（元素序最先写）；rect/roundRect $tintPanelDeep 或 $tintPanel，无边无影",
+        "白底变体 ComponentBackground1：$lt1+0.75pt $rulePanel 边；多块并列 gap ≥20"
+      ],
+      "qa_rules": [
+        "z_order_cover",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "C16",
+      "kind": "component",
+      "name": "圆形图标徽章（icon badge，白字形 PNG/SVG）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "图标徽章",
+        "条目前缀 icon",
+        "能力图标",
+        "icon badge"
+      ],
+      "data_shapes": [
+        "qualitative"
+      ],
+      "slot": "inline",
+      "composes_with": [
+        "C02",
+        "C11",
+        "C15",
+        "C03",
+        "C08"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "徽章 ellipse 67–128：$brand2（可 opacity0.5 半透明）或渐变 $gradChipLight→$brand2；橙制仅小面积点缀",
+        "字形一律 assets/media/icons/ 白色 SVG/PNG，摆放 = 徽章直径 55–60%",
+        "禁 emoji 充 icon；图标语义按 assets/media/manifest.json 登记选"
+      ],
+      "qa_rules": [
+        "img_src_exists",
+        "peer_font_consistency"
+      ]
+    },
+    {
+      "id": "C17",
+      "kind": "component",
+      "name": "仪表盘图标（gauge dial）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": null,
+      "semantics": [
+        "进度",
+        "达成率",
+        "水位",
+        "gauge"
+      ],
+      "data_shapes": [
+        "single-value"
+      ],
+      "slot": "inline",
+      "composes_with": [
+        "C02",
+        "C16"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "外环 93 + 内盘 88 渐变 $tintPanel→$tintPanelDeep；指针 triangle rot 按值 0–180°",
+        "示意性装饰，精确值必须写旁边 text（禁当精确数据图）"
+      ],
+      "qa_rules": [
+        "shape_rules",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "C18",
+      "kind": "component",
+      "name": "装饰图片族（decorative image assets）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/L01-cover.page",
+      "semantics": [
+        "背景图",
+        "装饰底图",
+        "封面背景"
+      ],
+      "data_shapes": [
+        "none"
+      ],
+      "slot": "inline",
+      "composes_with": [],
+      "conflicts_with": [
+        "C15"
+      ],
+      "hard_constraints": [
+        "恒最底层；同页背景图只用一张",
+        "cover-bg-arc.jpeg=L01 专用 [0,0,1440,810]；content-bg-silk-blue.jpeg 内容页浅蓝底；photo-bg-shanghai-skyline.jpeg 章节/照片版面",
+        "title-underline-gradient.png 仅对照素材，交付页用矢量渐变 rect 替代；半调点阵箭头 v1 省略"
+      ],
+      "qa_rules": [
+        "img_src_exists",
+        "media_image_weight",
+        "z_order_cover"
+      ]
+    },
+    {
+      "id": "T2a",
+      "kind": "component",
+      "name": "形状拼装表（CPIC 蓝白风）",
+      "composition": "canonical",
+      "ref": "reference/components.md",
+      "example": "assets/examples/T2a-table.page",
+      "semantics": [
+        "数据表",
+        "对比参数",
+        "指标矩阵",
+        "方案打分",
+        "假设表"
+      ],
+      "data_shapes": [
+        "table",
+        "comparison",
+        "matrix"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C01",
+        "C12",
+        "C15",
+        "R2"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "表头钮 roundRect adj16000 243×46.5，90° 渐变 $brand2→$navy+0.75pt 白边，tableHeader 14pt 白 bold",
+        "单元格 roundRect adj8000 233×42.2，$tintPanel+0.75pt $rulePanel 边，12pt $itemBlue 居中",
+        "行 pitch 42.2、表头 46.5；列 gap≈10；数字强调 $accent bold、负向 $negative",
+        "原生 table 元素不用于复刻此视觉（表头圆角渐变钮无法原生表达）"
+      ],
+      "qa_rules": [
+        "peer_font_consistency",
+        "element_collision",
+        "min_font",
+        "font_scale_whitelist",
+        "palette_closed"
+      ]
+    },
+    {
+      "id": "R1",
+      "kind": "chart-recipe",
+      "name": "实际 vs 估计柱状图（稀疏对堆积法）",
+      "composition": "canonical",
+      "ref": "reference/charts.md",
+      "example": "assets/examples/R1-bar-chart.page",
+      "semantics": [
+        "池子多大",
+        "增速",
+        "actual vs estimate",
+        "收入/利润柱图"
+      ],
+      "data_shapes": [
+        "time-series",
+        "comparison"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C02",
+        "C05",
+        "C15",
+        "T2a"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "两稀疏 series 同堆一组，非命中位 null 不是 0",
+        "actual=$brand1（白字 ctr）estimate=$accent（$inkTitle 深字 ctr）",
+        "轴 gridLine:false；隐藏轴保活隐藏禁 show:false",
+        "图题外部 text 左对齐图左缘；单位标 x=45.2"
+      ],
+      "qa_rules": [
+        "chart_gridline",
+        "axis_show_false",
+        "label_contrast",
+        "cat_label_length",
+        "clustered_bar_limit",
+        "stacked_zero_value",
+        "chart_color_semantics",
+        "series_name_numeric",
+        "xaxis_value_label",
+        "unit_label_align",
+        "chart_left_gutter",
+        "bar_label_redundant"
+      ]
+    },
+    {
+      "id": "R2",
+      "kind": "chart-recipe",
+      "name": "瀑布图（手工 3-series 堆积 proxy）",
+      "composition": "canonical",
+      "ref": "reference/charts.md",
+      "example": null,
+      "semantics": [
+        "从 A 到 B 的构成",
+        "桥",
+        "waterfall",
+        "增量分解",
+        "利润桥"
+      ],
+      "data_shapes": [
+        "bridge",
+        "time-series"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "T2a",
+        "C01",
+        "C15"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "禁原生 waterfall 类型（dPt 丢色）；_base 白底隐形 + 锚 $brand1 + 正增量 $brand3 + 负增量 $negative 拆系列",
+        "水位闭合 start+Σ增−Σ|减|==total；_base 不配 dataLabels",
+        "必须配对右侧假设表（T2a/文本表），+/− 符号在表里表达",
+        "6–7 类目图宽 ≥725px；类目名 ≤8 字符或双行"
+      ],
+      "qa_rules": [
+        "waterfall_closure",
+        "waterfall_negative_color",
+        "waterfall_no_native_type",
+        "waterfall_cat_label_len",
+        "chart_gridline",
+        "axis_show_false",
+        "series_name_numeric",
+        "xaxis_value_label",
+        "chart_color_semantics",
+        "unit_label_align"
+      ]
+    },
+    {
+      "id": "R3",
+      "kind": "chart-recipe",
+      "name": "堆积柱（segment mix 时序）",
+      "composition": "canonical",
+      "ref": "reference/charts.md",
+      "example": null,
+      "semantics": [
+        "份额变化",
+        "结构变化",
+        "stacked",
+        "业务构成时序"
+      ],
+      "data_shapes": [
+        "time-series",
+        "share"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C02",
+        "T2a",
+        "C15"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "逐 series stack:value；段内 ctr 深段白字浅段深字",
+        "柱顶 total 外部 text 逐柱一个（轴 min/max 线性换算，yAxis max 显式给）",
+        "系列色序 $brand1→$accent→$brand3/$brand2→$chartNeutral（其他恒灰）；段数 ≤5",
+        "0 值段删除不置 0"
+      ],
+      "qa_rules": [
+        "stacked_zero_value",
+        "stacked_toplabel_missing",
+        "chart_gridline",
+        "axis_show_false",
+        "label_contrast",
+        "series_name_numeric",
+        "chart_color_semantics",
+        "unit_label_align"
+      ]
+    },
+    {
+      "id": "R4",
+      "kind": "chart-recipe",
+      "name": "柱线组合双轴图（柱=金额 + 线=比率）",
+      "composition": "canonical",
+      "ref": "reference/charts.md",
+      "example": null,
+      "semantics": [
+        "记录 vs 指引",
+        "delivery/plan",
+        "金额+比率",
+        "combo 双轴"
+      ],
+      "data_shapes": [
+        "time-series",
+        "comparison"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C02",
+        "T2a",
+        "C15"
+      ],
+      "conflicts_with": [],
+      "hard_constraints": [
+        "yAxis 数组双轴，比率系列 yAxisIndex:1，ratio 轴 min/max 显式给",
+        "柱禁 ctr dataLabels（PowerPoint 吞签）；柱值柱顶外部 text 或靠轴读数",
+        "比率线 $navy 实线；参考/指引线 $chartNeutral dash 不出标签",
+        "nullHandling 是 series 级字段，写顶层报 UnknownField"
+      ],
+      "qa_rules": [
+        "combo_no_bar_ctr_labels",
+        "chart_gridline",
+        "axis_show_false",
+        "series_name_numeric",
+        "chart_color_semantics",
+        "label_contrast",
+        "unit_label_align"
+      ]
+    },
+    {
+      "id": "R5",
+      "kind": "chart-recipe",
+      "name": "饼环（doughnut，≤6 段）",
+      "composition": "canonical",
+      "ref": "reference/charts.md",
+      "example": null,
+      "semantics": [
+        "份额",
+        "结构占比",
+        "segment mix",
+        "doughnut"
+      ],
+      "data_shapes": [
+        "share"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C02",
+        "T2a",
+        "C15"
+      ],
+      "conflicts_with": [
+        "C07"
+      ],
+      "hard_constraints": [
+        "饼图一律转 doughnut（innerRadius 0.55）；段数 ≤6，超出合并 top5+其他",
+        "洞心放数字时 legend:false + 左栏 segment 表；洞心框 ≤160px 文案 ≤20 字符",
+        "startAngle 写 series 层不写顶层；小扇区避开图例区",
+        "段色序 $brand1→$accent→$brand3→$brand2/$gradChipLight→$chartNeutral；扇区标签 polish 反相"
+      ],
+      "qa_rules": [
+        "pie_max_slices",
+        "doughnut_legend_right",
+        "label_contrast",
+        "chart_color_semantics",
+        "series_name_numeric"
+      ]
+    },
+    {
+      "id": "D01",
+      "kind": "diagram",
+      "name": "金字塔分层（triangle+trapezoid 叠层 + 右注解列，推演配方）",
+      "composition": "canonical",
+      "ref": "reference/diagrams.md",
+      "semantics": [
+        "层级",
+        "金字塔",
+        "分层",
+        "优先级",
+        "体系分层"
+      ],
+      "data_shapes": [
+        "qualitative"
+      ],
+      "slot": "band-column",
+      "composes_with": [
+        "C01",
+        "C12",
+        "C15"
+      ],
+      "conflicts_with": [
+        "C09"
+      ],
+      "hard_constraints": [
+        "≤4 层；层色单向加深或减浅全 deck 一致；塔身文字 ≤6 字，超出挪右注解列"
+      ],
+      "qa_rules": [
+        "bounds_check",
+        "palette_closed",
+        "font_scale_whitelist",
+        "text_width_estimate",
+        "text_contrast"
+      ]
+    },
+    {
+      "id": "D02",
+      "kind": "diagram",
+      "name": "循环箭头环（blockArc 分段环，推演配方）",
+      "composition": "canonical",
+      "ref": "reference/diagrams.md",
+      "semantics": [
+        "循环",
+        "闭环",
+        "飞轮",
+        "正循环",
+        "闭环流程"
+      ],
+      "data_shapes": [
+        "qualitative"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C15"
+      ],
+      "conflicts_with": [
+        "C01",
+        "C05",
+        "C07",
+        "C13"
+      ],
+      "hard_constraints": [
+        "3–5 段（≥6 改 C02 卡阵列）；段色 brand1/2/3/navy 顺时针轮换；中心结论与 C01 banner 不同页；角度实写后必须渲染目检"
+      ],
+      "qa_rules": [
+        "bounds_check",
+        "palette_closed",
+        "shape_rules",
+        "text_contrast"
+      ]
+    },
+    {
+      "id": "D03",
+      "kind": "diagram",
+      "name": "象限矩阵（2×2 定位图：轴+象限底+散点，推演配方）",
+      "composition": "canonical",
+      "ref": "reference/diagrams.md",
+      "semantics": [
+        "象限",
+        "矩阵",
+        "定位",
+        "BCG",
+        "优先级矩阵",
+        "风险收益"
+      ],
+      "data_shapes": [
+        "qualitative"
+      ],
+      "slot": "band-full",
+      "composes_with": [
+        "C12"
+      ],
+      "conflicts_with": [
+        "C06"
+      ],
+      "hard_constraints": [
+        "仅定性定位（有真实数值序列改 scatter chart）；点位 ≤10，超出改表格"
+      ],
+      "qa_rules": [
+        "bounds_check",
+        "palette_closed",
+        "text_contrast",
+        "element_collision"
+      ]
+    }
+  ],
+  "example_coverage": {
+    "assets/examples/L01-cover.page": [
+      "L01",
+      "C18"
+    ],
+    "assets/examples/L02-toc.page": [
+      "L02",
+      "C12"
+    ],
+    "assets/examples/L03-divider.page": [
+      "L03"
+    ],
+    "assets/examples/C02-card-array.page": [
+      "L04",
+      "C01",
+      "C02"
+    ],
+    "assets/examples/C03-chevron-rows.page": [
+      "L04",
+      "C03"
+    ],
+    "assets/examples/C04-timeline-kpi.page": [
+      "L04",
+      "C04",
+      "C05"
+    ],
+    "assets/examples/C08-sphere.page": [
+      "L04",
+      "C08",
+      "C03"
+    ],
+    "assets/examples/R1-bar-chart.page": [
+      "L04",
+      "R1"
+    ],
+    "assets/examples/T2a-table.page": [
+      "L04",
+      "T2a"
+    ],
+    "assets/examples/C11-icon-columns.page": [
+      "L04",
+      "C01",
+      "C11",
+      "C16"
+    ]
+  }
+}
