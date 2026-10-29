@@ -1,12 +1,12 @@
 # JSON字段与可执行边界
 
-根字段：`title`、`slides`，可选`font/profile/designSystem/layoutPolicy/editReserve/source/footer`。`font`使用目标应用的真实字体family；`profile`为`desk/projection`；`designSystem`为`blue-ib/report`。所有几何为英寸，字体为pt，画布13⅓×7.5。
+根字段：`title`、`slides`，可选`font/profile/designSystem/layoutPolicy/editReserve/source/footer`。`font`使用目标应用的真实字体family；`profile`为`desk/projection`；`designSystem`为`blue-ib`（默认）、`blue-editorial`、`report` 或兼容项 `legacy-blue`。所有几何为英寸，字体为pt，画布13⅓×7.5。
 
 每页含`title/layout`，可选`subtitle/source/notes`：
 
 |layout|必需内容|
 |---|---|
-|peerColumns|2–4个`modules`，每项`title/action/body`，可选原生线图标`icon`|
+|cards / peerColumns|非空 `modules`，每项 `title/action/body`（cards 可用 text）；可选 metric 或原生线图标 icon。3 项短内容用卡片，2/4 项可用并列，多项/超长/有 metric 时重排证据行|
 |bullets|`bullets`，每项`heading/text`|
 |hubEvidence|`hub:{title,body}`及`branches:[{title,body}]`|
 |evidenceRows|`evidenceRows:[{label,evidence,implication}]`|
@@ -27,7 +27,7 @@
 
 ## 4.3 新内容页面
 
-默认 designSystem: blue-editorial。palette: template-blue 为全套蓝色预设；fontProfile: business-sans 为默认，template-kai 需要已有 KaiTi 字体，也可用显式 font 覆盖。
+4.4.1 默认 designSystem: blue-ib；blue-editorial 为显式公文选项。专项目录、比较、时间线、指标页与关系图在默认图解系统仍可调用。palette: template-blue 影响通用/专项页面，blue-ib 图解本体保留其蓝/橙语义色；不要声称它任意重涂全套。fontProfile: business-sans 选择通用中文字体；template-kai 需要已有 KaiTi；显式 font 或 BLUE_IB_FONT 最高优先。未指定字体时，默认图解优先可测量的本机优设标题黑，否则使用已安装候选字体并记录实际选择。
 
 - cover: title/subtitle/eyebrow/footer。
 - agenda: items[{title,body}]。
@@ -40,3 +40,7 @@
 - phaseBand: 至少2项 steps[{title,date?,text}]、可选 summary，保留先后顺序。
 
 详见 examples/editorial.json。新三类关系支持完整长文本续页；其他预设超出容量时清晰失败，需要明确拆分，不承诺任意输入都自动适配。
+
+## 默认图解适配边界
+
+普通 desk 正文 18pt；projection 正文 22pt。3 卡片放不下时改为证据行；证据行过长按句界（必要时按 Unicode 字符）续页，记录 contentSegments，校验各段拼接等于原文。标签与正文各自保持组内字号。标题在 32pt 超过两行会报错，须把限定语移到副标题。图表、复杂因果/证据分区、超长中心标签等仍可能要求显式重构，不能把已实现的行续页推广成所有对象都自动续页。

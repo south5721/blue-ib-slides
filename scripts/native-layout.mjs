@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {planBlue} from './diagram-system.mjs';
@@ -23,6 +24,8 @@ for(const p of (process.env.BLUE_IB_FONT_FILES||'').split(path.delimiter).filter
   if(!fs.existsSync(p))throw new Error(`Font file not found: ${p}`);
   canvas.GlobalFonts.registerFromPath(p);
 }
+const displayFont=path.join(os.homedir(),'Library/Fonts/YouSheBiaoTiHei-2.ttf');
+if(fs.existsSync(displayFont))canvas.GlobalFonts.registerFromPath(displayFont,'优设标题黑');
 export const latinFor=(font)=>font;
 export const availableFonts=canvas.GlobalFonts.families.map(f=>f.family);
 export function resolveFont(requested){
@@ -71,12 +74,17 @@ export function titlePlan(title,font,profile){
   for(const size of profile.title){const m=measure(title,12.08,size,font,true,{lh:1.12});if(m.lines.length<=2)return {...m,size}}
   throw new Error(`Title exceeds two lines at its size floor; revise the title, keeping qualifications in the subtitle: ${title}`);
 }
-export function normalizeSlide(s,system='blue-editorial'){
+export function designSystem(deck={},slide={}){
+  const system=slide.designSystem||deck.designSystem||'blue-ib';
+  if(!['blue-ib','blue-editorial','legacy-blue','report'].includes(system))throw new Error(`Unknown designSystem: ${system}; choose an explicit supported style instead of silently falling back`);
+  return system;
+}
+export function normalizeSlide(s,system='blue-ib'){
   let type=s.layout||'auto';
   if(type==='auto'){
-    if(system==='blue-editorial'&&s.roof&&s.pillars)type='strategyHouse';
-    else if(system==='blue-editorial'&&s.relationship==='cycle'&&s.steps)type='cycleEvidence';
-    else if(system==='blue-editorial'&&s.relationship==='sequence'&&s.steps)type='phaseBand';
+    if(['blue-ib','blue-editorial'].includes(system)&&s.roof&&s.pillars)type='strategyHouse';
+    else if(['blue-ib','blue-editorial'].includes(system)&&s.relationship==='cycle'&&s.steps)type='cycleEvidence';
+    else if(['blue-ib','blue-editorial'].includes(system)&&s.relationship==='sequence'&&s.steps)type='phaseBand';
     else if(s.tasks&&s.range)type='timeline';
     else if(s.items&&s.relationship==='agenda')type='agenda';
     else if(['comparison','challenge-solution'].includes(s.relationship)&&s.pairs)type='comparison';
@@ -205,10 +213,13 @@ export function planDeck(deck){
   if(!Array.isArray(deck.slides)||!deck.slides.length)throw new Error('slides must be nonempty');
   if(deck.fontProfile&&!['template-kai','business-sans'].includes(deck.fontProfile))throw new Error('Unknown fontProfile');
   if(deck.palette&&!theme.palettes?.[deck.palette])throw new Error('Unknown palette; choose a declared whole-deck palette');
-  const font=resolveFont(deck.font||(deck.fontProfile==='template-kai'?'KaiTi':undefined)),profile=theme.profiles[deck.profile||'desk'];if(!profile)throw new Error('profile must be desk or projection');
+  const system=designSystem(deck);
+  const preferred=deck.font||process.env.BLUE_IB_FONT||(deck.fontProfile==='template-kai'?'KaiTi':!deck.fontProfile&&system==='blue-ib'&&availableFonts.includes('优设标题黑')?'优设标题黑':undefined);
+  const font=resolveFont(preferred),profile=theme.profiles[deck.profile||'desk'];if(!profile)throw new Error('profile must be desk or projection');
   const pages=[];const decisions=[];
   for(let i=0;i<deck.slides.length;i++){
-    const s=normalizeSlide(deck.slides[i],deck.slides[i].designSystem||deck.designSystem||'blue-editorial');s.title=s.title||deck.title;if(!s.title)throw new Error(`slide ${i+1} has no title`);
+    const pageSystem=designSystem(deck,deck.slides[i]);
+    const s={...normalizeSlide(deck.slides[i],pageSystem),designSystem:pageSystem};s.title=s.title||deck.title;if(!s.title)throw new Error(`slide ${i+1} has no title`);
     const title=titlePlan(s.title,font,profile);const sub=s.subtitle||s.banner||'';
     const subtitle=sub?measure(sub,12.08,profile.body.at(-1),font):null;
     if(subtitle&&subtitle.lines.length>3)throw new Error(`slide ${i+1}: subtitle longer than three lines; move it into the main content`);
@@ -217,7 +228,7 @@ export function planDeck(deck){
     const reserve=s.editReserve??deck.editReserve??0.30;if(reserve<0||reserve>0.5)throw new Error('editReserve must be 0–0.5');
     let plans;
     const diagram=(s.designSystem||deck.designSystem)==='blue-ib'?planBlue(s,{font,profile,measure,wrap,reserve,policy:s.layoutPolicy||deck.layoutPolicy||'adaptive'}):null;
-    const editorial=(s.designSystem||deck.designSystem||'blue-editorial')==='blue-editorial'?planEditorial({...s,author:s.author||deck.author},{box,font,profile,measure,reserve}):null;
+    const editorial=(s.designSystem==='blue-editorial'||(s.designSystem==='blue-ib'&&['agenda','comparison','comparisonMatrix','timeline','chartBrief'].includes(s.layout)))?planEditorial({...s,author:s.author||deck.author},{box,font,profile,measure,reserve}):null;
     if(diagram)plans=diagram;
     else if(['strategyHouse','cycleEvidence','phaseBand'].includes(s.layout))plans=planTemplateRelations(s,{box,font,profile,measure,reserve});
     else if(editorial)plans=editorial;

@@ -1,0 +1,28 @@
+{
+  "version": "4.4.1",
+  "date": "2026-10-29",
+  "input": "examples/diagram.json",
+  "artifact": "examples/diagram.pptx",
+  "sha256": "d4957fb639e1166a4dc465c68c839199c8385b1ba396d5d43c64effa217e7d77",
+  "application": "Microsoft PowerPoint for Mac 16.112",
+  "font": "DengXian",
+  "slides": 10,
+  "review": "Native PPTX opened and exported to PDF; whole-deck contact sheet and all 10 rendered pages visually reviewed at 1920 × 1080. No observed clipping, collision, or missing declared text in this sample.",
+  "pages": {
+    "1": "Three adaptive cards; action divider below complete text; consistent 18pt body",
+    "2": "Four peer modules; native icons and aligned labels",
+    "3": "Editable hub and branch evidence; final body clears footer",
+    "4–6": "Seven peers continued 3/2/2 at one body size",
+    "7–8": "Long mixed title and asymmetric evidence; stable labels, top-aligned long body, complete 152.6 value",
+    "9": "Two real native charts; 2 embedded XLSX, chart caches checked",
+    "10": "Native table; all values preserved"
+  },
+  "mechanical_checks": 64,
+  "imported_media": 0,
+  "limitations": [
+    "This is a sample review, not universal layout or style-similarity certification.",
+    "Windows PowerPoint and WPS are not verified.",
+    "No new public-font Office text-growth contract was established. Regenerate or reflow when editing beyond tested capacity.",
+    "Historical demo/editorial PPTX remain earlier public references; the 4.4.1 render evidence is diagram.pptx."
+  ]
+}

@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {dependency,theme,root,planDeck,measure,wrap,latinFor} from './native-layout.mjs';
+import {dependency,theme,root,planDeck,measure,wrap,latinFor,designSystem} from './native-layout.mjs';
 import {renderBlue,drawSemanticIcon} from './diagram-system.mjs';
 import {renderEditorial} from './editorial-system.mjs';
 import {renderTemplateRelations} from './template-relations.mjs';
@@ -25,10 +25,10 @@ function text(s,id,t,x,y,w,h,size,opts={}){
  objects.push({id,text:String(t),x,y,w,h,size,lines:m.lines.length,measuredHeight:m.actualHeight});
 }
 function chrome(s,p){
- if((p.s.designSystem||deck.designSystem||'blue-ib')==='blue-ib'&&(p.s.skin||deck.skin)!=='report'){
+ if(designSystem(deck,p.s)==='blue-ib'&&(p.s.skin||deck.skin)!=='report'){
   renderBlue(s,{...p,p:{...p.p,mode:'blueChrome',titleSize:p.title.size,titleHeight:p.title.height,subtitleSize:plan.profile.body.at(-1)}},{pptx,R,root,measure,font:plan.font,objects,nativeStyle,deck,num});return;
  }
- const graphical=(p.s.skin||deck.skin)==='diagram'||(p.s.designSystem||deck.designSystem||'blue-editorial')==='blue-editorial';
+ const graphical=(p.s.skin||deck.skin)==='diagram'||designSystem(deck,p.s)==='blue-editorial';
  s.background={color:C.white};text(s,'title',p.s.title,.62,.34,12.09,p.title.height,p.title.size,{bold:true,color:graphical?C.brand:C.title,lh:1.12});
  rule(s,.62,.34+p.title.height+.12,12.09,C.rule);
  if(p.subtitle)text(s,'subtitle',p.s.subtitle||p.s.banner,.62,.34+p.title.height+.28,12.09,p.subtitle.height,plan.profile.body.at(-1),{color:C.secondary});
@@ -144,6 +144,6 @@ const target=path.resolve(output);fs.mkdirSync(path.dirname(target),{recursive:t
 if(process.env.BLUE_IB_KEEP_RAW)fs.copyFileSync(target,target+'.raw.pptx');
 const patchFile=target+'.native-styles.json';fs.writeFileSync(patchFile,JSON.stringify(nativePatches));
 const result=spawnSync(process.env.BLUE_IB_PYTHON||'python3',[path.join(root,'scripts/finalize-native.py'),target,plan.font,latinFor(plan.font),patchFile],{encoding:'utf8'});if(result.status!==0)throw new Error(`OOXML finalization failed: ${result.stderr||result.stdout}`);
-fs.writeFileSync(target+'.layout.json',JSON.stringify({version:theme.version,font:plan.font,profile:deck.profile||'desk',units:'inches, font points',designLock:{designSystem:deck.designSystem||'blue-editorial',palette:C,paletteProfile:deck.palette||'blue-original',fontProfile:deck.fontProfile||'business-sans',editorialColors:theme.editorialColors,typography:plan.profile,actualMeasuredFont:plan.font,latinFont:latinFor(plan.font),canvas:theme.canvas},editContract:{mode:'noAutofit',reserve:deck.editReserve??.30,policies:plan.pages.map(q=>({inputSlide:q.inputIndex,policy:q.p.policy||'adaptive',reserve:q.p.policy==='reference'?0:q.reserve})),limit:'Reserved headroom is a design estimate. Only representative edits in the named application are verified; arbitrary text growth is unsupported.'},decisions:plan.decisions,pages,visualQA:'pending actual PPTX rendering and per-page review'},null,2));
+fs.writeFileSync(target+'.layout.json',JSON.stringify({version:theme.version,font:plan.font,profile:deck.profile||'desk',units:'inches, font points',designLock:{designSystem:designSystem(deck),palette:C,paletteProfile:deck.palette||'blue-original',fontProfile:deck.fontProfile||'available-local-font',editorialColors:theme.editorialColors,typography:plan.profile,actualMeasuredFont:plan.font,latinFont:latinFor(plan.font),canvas:theme.canvas},editContract:{mode:'noAutofit',reserve:deck.editReserve??.30,policies:plan.pages.map(q=>({inputSlide:q.inputIndex,policy:q.p.policy||'adaptive',reserve:q.p.policy==='reference'?0:q.reserve})),limit:'Reserved headroom is a design estimate. Only representative edits in the named application are verified; arbitrary text growth is unsupported.'},decisions:plan.decisions,pages,visualQA:'pending actual PPTX rendering and per-page review'},null,2));
 console.log(`Created ${target} (${pages.length} slides; font ${plan.font}); visual review pending`);
 }catch(e){console.error(e.stack||e.message);process.exit(2)}

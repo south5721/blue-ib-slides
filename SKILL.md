@@ -12,16 +12,19 @@ description: 制作、改造或评审可编辑蓝调商务 PPTX，按真实文�
 ## 路线选择
 
 - 新稿：组织有证据的叙事，再生成 deck.json，运行 `python3 scripts/build-native.py deck.json out/deck.pptx`。可用 `--story story.json` 检查事实覆盖和算术。
-- 新内容适配：默认 `designSystem: "blue-editorial"`。按内容测量，过长先变换版式或续页；同级字体一致，不静默删事实和数字。战略屋、闭环证据、阶段带须分别有真实共同目标、循环关系和先后阶段。
-- 原有图解：`designSystem: "blue-ib"` 保持并列、证据行、因果、中心、双图路线。明确 `layoutPolicy: "reference"` 才使用紧凑复现预设；只适用于案头，不能冒称投影可读。
+- 新内容适配：默认 `designSystem: "blue-ib"`。蓝色标签、橙色动作词和关系图解优先；三项短模块进入蓝色横带与并列卡片，单项、多项或长文本进入标签—箭头—证据行。按内容测量，过长先变换版式或续页；同级字体一致，不静默删事实和数字。战略屋、闭环证据、阶段带须分别有真实共同目标、循环关系和先后阶段。
+- 公文与清爽条目：显式使用 `designSystem: "blue-editorial"`。
+- 图解密度：`blue-ib` 保持并列、证据行、因果、中心、双图路线。明确 `layoutPolicy: "reference"` 才使用紧凑复现预设；只适用于案头，不能冒称投影可读。
 - 既有 PPTD：维护 `.pptd/.page` 项目时读 `reference/legacy-pptd-workflow.md`、`reference/legacy-generation.md` 与 `reference/legacy-qa-gate.md`。原生尺寸为英寸/pt，PPTD 配方为 1440×810；不得混用两套坐标、导出链或质量门。公开版不含历史位图资产，只保留配方、兼容诊断与 QA；沿用用户项目已有媒体，不恢复旧远程导出。
 - 模板复现：先只读盘点附件、渲染原稿、建立页与对象对应，再填充副本。不要将通用重排规则强加到同内容复现；超出模板容量时说明变化。原生模板可选本地 PPT Master 桥接，读 [集成说明](references/ppt-master.md)。
 
 ## 构建和字体
 
-安装见 [README](README.md)。使用技能目录内锁定的 npm 依赖，缺少则报告。无需远程导出、凭据或云端服务。测量时必须能读取选定字体；BLUE_IB_FONT_FILES 只注册已有本地字体，不捆绑或下载字体。
+安装见 [README](README.md)。使用技能目录内锁定的 npm 依赖，缺少则报告。无需远程导出、凭据或云端服务。测量时必须能读取选定字体；BLUE_IB_FONT_FILES 只注册已有本地字体，不捆绑或下载字体。显式 font / BLUE_IB_FONT 优先；默认图解可使用本机已有的优设标题黑，否则选可测量中文字体并记入 layout.json。fontProfile: business-sans 固定走通用字体选择。不同字体会改变断行，须实测。
 
-新页面见 [editorial.json](examples/editorial.json)，旧图解见 [demo.json](examples/demo.json)，参数见 [schema](references/schema.md)。全套使用明确的 profile（desk/projection）、font/fontProfile、palette 与文字角色下限；不用无限缩小解决超限。缺失数值不能填零，日期不能编造，图表轴不能隐藏已声明数值。
+默认图解见 [diagram.json](examples/diagram.json)，专项页面见 [editorial.json](examples/editorial.json)，更多关系图解见 [demo.json](examples/demo.json)，参数见 [schema](references/schema.md)。全套使用明确的 profile（desk/projection）、font/fontProfile、palette 与文字角色下限；不用无限缩小解决超限。缺失数值不能填零，日期不能编造，图表轴不能隐藏已声明数值。
+
+同内容复现与新内容迁移分别验收：复现先对齐标题、字阶、网格与关系造型，再看细节；迁移保留蓝色标签、橙色动作、短横线和轻线框等系统语言，超量先换版或续页。不要把所有页面硬套卡片，也不要用颜色相同代替整体相似度。样式决策见 [视觉系统](references/diagram-system.md)。
 
 ## 交付门槛
 

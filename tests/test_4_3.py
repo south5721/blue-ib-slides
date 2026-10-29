@@ -44,7 +44,7 @@ with tempfile.TemporaryDirectory(prefix='blue-ib-43-') as tmp:
     for n in [1,2,4,7]:
         d={'title':'40字左右混排长标题：阅读计划2026Q4复盘，保留事实与责任节点并明确统计口径','designSystem':'blue-editorial','slides':[{'layout':'cards','modules':[{'title':f'模块{i+1}','body':('完整记录与数值123.45，保留原始依据。'*(3 if i%2==0 else 12))} for i in range(n)]}]}
         r,out=run(d);ok(f'{n} peer modules retain asymmetric evidence',r.returncode==0 and content.check(d,out)['ok'])
-    d=copy.deepcopy(demo);d.pop('designSystem');r,out=run(d);ok('Default routes to the editorial system',r.returncode==0 and json.loads(Path(str(out)+'.layout.json').read_text())['designLock']['designSystem']=='blue-editorial')
+    d=copy.deepcopy(demo);d.pop('designSystem');r,out=run(d);ok('Default routes to the blue diagram system',r.returncode==0 and json.loads(Path(str(out)+'.layout.json').read_text())['designLock']['designSystem']=='blue-ib')
     if sys.platform=='darwin':
         local=tmp/'optional-master';local.mkdir();(local/'SKILL.md').write_text('test fixture, no executable scripts')
         r=subprocess.run([sys.executable,str(S/'ppt-master-bridge.py'),'--root',str(local),'svg-export',str(tmp/'absent'),'--output',str(tmp/'motion.pptx'),'--animation','fade'],capture_output=True,text=True)
